@@ -13,7 +13,6 @@ void idt_set_gate(uint8_t idx, uint32_t base, uint16_t sel, uint8_t flags)
 
 void idt_init(void)
 {
-    printf("idt_init()");
     idt_pt.limit = sizeof(idt) - 1;
     idt_pt.base = (uint32_t)&idt;
 

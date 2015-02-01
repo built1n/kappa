@@ -6,13 +6,12 @@ void isr_handle(struct regs_t *regs)
 {
     if(regs->int_no < 32)
     {
-        printf("received exception!\n");
+        panic("received exception!\n");
     }
 }
 
 void isr_init(void)
 {
-    printf("ISR init");
     idt_set_gate(0, (uint32_t)_isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)_isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)_isr2, 0x08, 0x8E);

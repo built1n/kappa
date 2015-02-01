@@ -22,6 +22,8 @@ stack_top:
         .type _start, @function
 _start:
         movl $stack_top, %esp
+        push %eax # multiboot magic
+        push %ebp # multiboot header
         call main
         cli
         hlt

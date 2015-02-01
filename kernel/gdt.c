@@ -18,9 +18,10 @@ static void gdt_set_gate(int idx, uint32_t base, uint32_t limit, uint8_t access,
 
 void gdt_init(void)
 {
-    gp.limit = (sizeof(struct gdt_entry) * sizeof(gdt)/sizeof(gdt[0])) - 1;
+    gp.limit = sizeof(gdt) - 1;
     gp.base = (uint32_t)&gdt;
 
+    /* null segment */
     gdt_set_gate(0, 0, 0, 0, 0);
 
     /* code segment */

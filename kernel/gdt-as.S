@@ -1,8 +1,7 @@
         .global gdt_flush
         .type gdt_flush, @function
-gdt_flush: # prototype: void gdt_flush(uint32_t addr)
-        cli
-        movl 4(%esp), %eax # load the address off the stack (first param)
+gdt_flush:      # prototype: void gdt_flush(uint32)
+        movl 4(%esp), %eax
         lgdt (%eax)
         mov $0x10, %ax
         mov %ax, %ds
@@ -10,7 +9,6 @@ gdt_flush: # prototype: void gdt_flush(uint32_t addr)
         mov %ax, %fs
         mov %ax, %gs
         mov %ax, %ss
-        sti
         jmp .flush
 .flush:
         ret

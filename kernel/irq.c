@@ -38,8 +38,6 @@ void irq_init(void)
 {
     irq_remap();
 
-    printf("irq_init()");
-
     idt_set_gate(32, (uint32_t)_irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint32_t)_irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)_irq2, 0x08, 0x8E);
@@ -63,8 +61,6 @@ void irq_handler(struct regs_t *regs)
     void (*handler)(struct regs_t *r);
 
     handler = irq_callbacks[regs->int_no - 32];
-
-    printf("IRQ called\n");
 
     if(handler)
     {

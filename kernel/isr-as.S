@@ -20,6 +20,7 @@ isr_handler:
         pop %ds
         popa
         add $8, %esp
+        sti
         iret
 
         # stub ISR's:

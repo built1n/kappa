@@ -1,7 +1,7 @@
-OBJ = drivers/tty.o kernel/main.o boot/head.o kernel/io.o kernel/gdt-as.o kernel/gdt.o
+OBJ = drivers/tty.o kernel/main.o boot/head.o kernel/io.o kernel/gdt-as.o kernel/gdt.o libc/stdio.o libc/string.o kernel/idt.o kernel/idt-as.o kernel/isr.o kernel/irq-as.o kernel/isr-as.o kernel/irq.o kernel/panic.o
 CC = gcc
 LD = ld
-INCLUDES = -Idrivers -Ikernel/include
+INCLUDES = -Idrivers -Ikernel/include -Ilibc/include
 CFLAGS = -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES)
 
 AS = as

@@ -11,7 +11,7 @@ static uint16_t *term_buf;
 void tty_init(void)
 {
     term_buf = (uint16_t*)0xB8000;
-    term_col = VGA_MAKE_COLOR(VGA_WHITE, VGA_BLACK);
+    tty_set_color(VGA_MAKE_COLOR(VGA_LIGHT_GRAY, VGA_BLACK));
     tty_clear();
 }
 
