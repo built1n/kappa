@@ -10,7 +10,7 @@ struct gdt_entry {
 } __attribute__((packed));
 
 struct gdt_ptr {
-    uint8_t limit;
+    uint16_t limit;
     uint32_t base;
 } __attribute__((packed));
 
@@ -18,6 +18,6 @@ struct gdt_entry gdt[3];
 struct gdt_ptr gp;
 
 /* assembly */
-extern void gdt_flush(struct gdt_ptr*);
+extern void gdt_flush(uint32_t);
 
 void gdt_init(void);
