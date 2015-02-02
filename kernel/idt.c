@@ -1,6 +1,8 @@
 #include <stdint.h>
 #include <string.h>
 #include "idt.h"
+#include "isr.h"
+#include "irq.h"
 
 void idt_set_gate(uint8_t idx, uint32_t base, uint16_t sel, uint8_t flags)
 {

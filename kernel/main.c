@@ -5,9 +5,8 @@
 #include "tty.h"
 #include <stdio.h>
 
-void irq1(struct regs_t *regs)
+void interrupt(struct regs_t regs)
 {
-    printf("Keypress\n");
 }
 
 void main(struct multiboot_header *hdr, uint32_t magic)
@@ -15,17 +14,17 @@ void main(struct multiboot_header *hdr, uint32_t magic)
     tty_init();
 
     gdt_init();
-    printf("GDT initialized.\n");
-
     idt_init();
-    printf("IDT initialized.\n");
 
     isr_init();
     irq_init();
 
-    irq_set_handler(1, irq1);
+    for(int i=0;i<256;++i)
+        set_interrupt_handler(i, interrupt);
 
-    printf("Hello, world!\n");
+    asm("sti");
+
+    printf("Boot finished.!\n");
     while(1)
         ;
 }

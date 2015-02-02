@@ -44,3 +44,5 @@ struct regs_t {
     uint32_t int_no, err_code;    /* our 'push byte #' and ecodes do this */
     uint32_t eip, cs, eflags, useresp, ss;   /* pushed by the processor automatically */
 };
+
+void set_interrupt_handler(uint8_t interrupt, void (*func)(struct regs_t));

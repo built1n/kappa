@@ -1,17 +1,31 @@
+#include <stddef.h>
 #include <stdio.h>
 #include "isr.h"
 #include "idt.h"
+#include "panic.h"
 
-void isr_handle(struct regs_t *regs)
+void (*int_callbacks[256])(struct regs_t) = { NULL };
+
+void set_interrupt_handler(uint8_t n, void (*callback)(struct regs_t))
 {
-    if(regs->int_no < 32)
+    int_callbacks[n] = callback;
+}
+
+void isr_handler(struct regs_t regs)
+{
+    if(int_callbacks[regs.int_no])
     {
-        panic("received exception!\n");
+        int_callbacks[regs.int_no](regs);
+    }
+    else
+    {
+        printf("WARNING: unhandled ISR");
     }
 }
 
 void isr_init(void)
 {
+    printf("ISR handlers installed.\n");
     idt_set_gate(0, (uint32_t)_isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)_isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)_isr2, 0x08, 0x8E);

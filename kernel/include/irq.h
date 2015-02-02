@@ -17,5 +17,4 @@ extern void _irq15(void);
 
 struct regs_t;
 
-void irq_set_handler(int irq, void (*handler)(struct regs_t*));
 void irq_init(void);

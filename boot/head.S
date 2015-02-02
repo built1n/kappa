@@ -21,6 +21,7 @@ stack_top:
         .global _start
         .type _start, @function
 _start:
+        cli
         movl $stack_top, %esp
         push %eax # multiboot magic
         push %ebp # multiboot header

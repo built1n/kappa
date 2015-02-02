@@ -9,6 +9,6 @@ gdt_flush:      # prototype: void gdt_flush(uint32)
         mov %ax, %fs
         mov %ax, %gs
         mov %ax, %ss
-        jmp .flush
+        jmp $0x8, $.flush
 .flush:
         ret

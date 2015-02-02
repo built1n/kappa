@@ -1,4 +1,5 @@
-isr_handler:
+        .extern isr_handler
+isr_stub:
         pusha
         push %ds
         push %es
@@ -11,8 +12,7 @@ isr_handler:
         mov %ax, %gs
         mov %esp, %eax   # Push us the stack
         push %eax
-        mov $isr_handler, %eax
-        call *%eax
+        call isr_handler
         pop %eax
         pop %gs
         pop %fs
@@ -20,7 +20,6 @@ isr_handler:
         pop %ds
         popa
         add $8, %esp
-        sti
         iret
 
         # stub ISR's:
@@ -56,159 +55,160 @@ isr_handler:
         .global _isr29
         .global _isr30
         .global _isr31
-# Interrupts 8, 10, 11, 12, 13, and 14 push error codes onto the stack
+
+        # Interrupts 8, 10, 11, 12, 13, and 14 push error codes onto the stack
 
 _isr0:
     cli
     push $0
     push $0
-    jmp isr_handler
+    jmp isr_stub
 _isr1:
     cli
     push $0
     push $1
-    jmp isr_handler
+    jmp isr_stub
 _isr2:
     cli
     push $0
     push $2
-    jmp isr_handler
+    jmp isr_stub
 _isr3:
     cli
     push $0
     push $3
-    jmp isr_handler
+    jmp isr_stub
 _isr4:
     cli
     push $0
     push $4
-    jmp isr_handler
+    jmp isr_stub
 _isr5:
     cli
     push $0
     push $5
-    jmp isr_handler
+    jmp isr_stub
 _isr6:
     cli
     push $0
     push $6
-    jmp isr_handler
+    jmp isr_stub
 _isr7:
     cli
     push $0
     push $7
-    jmp isr_handler
+    jmp isr_stub
 _isr8:
     cli
     push $8
-    jmp isr_handler
+    jmp isr_stub
 _isr9:
     cli
     push $0
     push $9
-    jmp isr_handler
+    jmp isr_stub
 _isr10:
     cli
     push $10
-    jmp isr_handler
+    jmp isr_stub
 _isr11:
     cli
     push $11
-    jmp isr_handler
+    jmp isr_stub
 _isr12:
     cli
     push $12
-    jmp isr_handler
+    jmp isr_stub
 _isr13:
     cli
     push $13
-    jmp isr_handler
+    jmp isr_stub
 _isr14:
     cli
     push $14
-    jmp isr_handler
+    jmp isr_stub
 _isr15:
     cli
     push $0
     push $15
-    jmp isr_handler
+    jmp isr_stub
 _isr16:
     cli
     push $0
     push $16
-    jmp isr_handler
+    jmp isr_stub
 _isr17:
     cli
     push $0
     push $17
-    jmp isr_handler
+    jmp isr_stub
 _isr18:
     cli
     push $0
     push $18
-    jmp isr_handler
+    jmp isr_stub
 _isr19:
     cli
     push $0
     push $19
-    jmp isr_handler
+    jmp isr_stub
 _isr20:
     cli
     push $0
     push $20
-    jmp isr_handler
+    jmp isr_stub
 _isr21:
     cli
     push $0
     push $21
-    jmp isr_handler
+    jmp isr_stub
 _isr22:
     cli
     push $0
     push $22
-    jmp isr_handler
+    jmp isr_stub
 _isr23:
     cli
     push $0
     push $23
-    jmp isr_handler
+    jmp isr_stub
 _isr24:
     cli
     push $0
     push $24
-    jmp isr_handler
+    jmp isr_stub
 _isr25:
     cli
     push $0
     push $25
-    jmp isr_handler
+    jmp isr_stub
 _isr26:
     cli
     push $0
     push $26
-    jmp isr_handler
+    jmp isr_stub
 _isr27:
     cli
     push $0
     push $27
-    jmp isr_handler
+    jmp isr_stub
 _isr28:
     cli
     push $0
     push $28
-    jmp isr_handler
+    jmp isr_stub
 _isr29:
     cli
     push $0
     push $29
-    jmp isr_handler
+    jmp isr_stub
 _isr30:
     cli
     push $0
     push $30
-    jmp isr_handler
+    jmp isr_stub
 _isr31:
     cli
     push $0
     push $31
-    jmp isr_handler
+    jmp isr_stub

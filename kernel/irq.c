@@ -6,19 +6,8 @@
 #include "irq.h"
 #include "isr.h"
 
-static void *irq_callbacks[16] = { NULL };
-
-void irq_set_handler(int irq, void (*handler)(struct regs_t*))
-{
-    if(irq < 16 && irq >= 0)
-        irq_callbacks[irq] = handler;
-}
-
-void irq_reset_handler(int irq)
-{
-    if(irq < 16 && irq >= 0)
-        irq_callbacks[irq] = NULL;
-}
+/* in isr.c */
+extern void *int_callbacks[256];
 
 void irq_remap(void)
 {
@@ -37,7 +26,7 @@ void irq_remap(void)
 void irq_init(void)
 {
     irq_remap();
-
+    printf("IRQ handlers installed.\n");
     idt_set_gate(32, (uint32_t)_irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint32_t)_irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)_irq2, 0x08, 0x8E);
@@ -56,11 +45,11 @@ void irq_init(void)
     idt_set_gate(47, (uint32_t)_irq15, 0x08, 0x8E);
 }
 
-void irq_handler(struct regs_t *regs)
+void irq_handler(struct regs_t regs)
 {
-    void (*handler)(struct regs_t *r);
+    void (*handler)(struct regs_t r);
 
-    handler = irq_callbacks[regs->int_no - 32];
+    handler = int_callbacks[regs.int_no];
 
     if(handler)
     {
@@ -70,7 +59,7 @@ void irq_handler(struct regs_t *regs)
     /* If the IDT entry that was invoked was greater than 40
      *  (meaning IRQ8 - 15), then we need to send an EOI to
      *  the slave controller */
-    if (regs->int_no >= 40)
+    if (regs.int_no >= 40)
     {
         outb(0xA0, 0x20);
     }
