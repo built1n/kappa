@@ -14,6 +14,21 @@ int puts(const char* str)
     return 0;
 }
 
+static char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
+                              '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+static void print_hex(unsigned int n)
+{
+    unsigned mask = 0xF0000000;
+    unsigned shift = 28;
+    while(mask)
+    {
+        putchar(hex_table[(n & mask) >> shift]);
+        mask >>= 4;
+        shift -= 4;
+    }
+}
+
 int printf(const char *fmt, ...)
 {
     va_list ap;
@@ -32,6 +47,9 @@ int printf(const char *fmt, ...)
                 break;
             case 's':
                 puts(va_arg(ap, const char*));
+                break;
+            case 'x':
+                print_hex(va_arg(ap, unsigned));
                 break;
             default:
                 puts("printf: unknown format\n");

@@ -1,30 +1,40 @@
+#include <stdio.h>
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
 #include "irq.h"
+#include "ps2.h"
+#include "timer.h"
 #include "tty.h"
-#include <stdio.h>
-
-void interrupt(struct regs_t regs)
-{
-}
 
 void main(struct multiboot_header *hdr, uint32_t magic)
 {
+    /* init the terminal first so we can get some output */
     tty_init();
 
+    /* then the descriptor tables so we can do more useful stuff */
     gdt_init();
     idt_init();
 
+    /* install all the interrupt stubs */
     isr_init();
     irq_init();
 
-    for(int i=0;i<256;++i)
-        set_interrupt_handler(i, interrupt);
+    /* initialize other drivers */
+    timer_init();
+    ps2_init();
 
     asm("sti");
 
-    printf("Boot finished.!\n");
+    for(;;)
+    {
+        ps2_set_leds(0x01);
+        ps2_set_leds(0x02);
+        ps2_set_leds(0x04);
+        ps2_set_leds(0x02);
+    }
+
+    printf("Boot finished.\n");
     while(1)
         ;
 }

@@ -19,7 +19,7 @@ void isr_handler(struct regs_t regs)
     }
     else
     {
-        printf("WARNING: unhandled ISR");
+        printf("WARNING: unhandled ISR!\n");
     }
 }
 

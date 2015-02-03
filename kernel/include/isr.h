@@ -34,15 +34,18 @@ extern void _isr29(void);
 extern void _isr30(void);
 extern void _isr31(void);
 
-/* installs all the ISR's */
+/* installs ISR's 0-31 */
 void isr_init(void);
 
 /* This defines what the stack looks like after an ISR was running */
 struct regs_t {
-    uint32_t gs, fs, es, ds;      /* pushed the segs last */
+    uint32_t gs, fs, es, ds; /* pushed the segs last */
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;  /* pushed by 'pusha' */
-    uint32_t int_no, err_code;    /* our 'push byte #' and ecodes do this */
+    uint32_t err_code; /* exceptions push this */
+    uint32_t int_no; /* interrupt stubs do this */
     uint32_t eip, cs, eflags, useresp, ss;   /* pushed by the processor automatically */
-};
+} __attribute__((packed));
+
+#define IRQ(x) (32+x)
 
 void set_interrupt_handler(uint8_t interrupt, void (*func)(struct regs_t));

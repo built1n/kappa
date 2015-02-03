@@ -55,6 +55,10 @@ void irq_handler(struct regs_t regs)
     {
         handler(regs);
     }
+    else
+    {
+        printf("WARNING: Unhandled IRQ: 0x%x!\n", regs.int_no);
+    }
 
     /* If the IDT entry that was invoked was greater than 40
      *  (meaning IRQ8 - 15), then we need to send an EOI to

@@ -65,14 +65,20 @@ void tty_putchar(char ch)
         {
             term_x = 0;
             if(++term_y == VGA_HEIGHT)
+            {
+                tty_clear();
                 term_y = 0;
+            }
         }
     }
     else
     {
         term_x = 0;
         if(++term_y == VGA_HEIGHT)
+        {
+            tty_clear();
             term_y = 0;
+        }
     }
     update_cursor();
 }
