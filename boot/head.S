@@ -13,8 +13,8 @@ multiboot_header:
 
 .section .stack
 stack_bottom:                   # Stack grows up in addresses, so bottom is
-                                # lower than the top
-        .skip 16384             # 32KB stack
+                                # lower in memory than the top
+        .skip 16384             # 16KB stack
 stack_top:
 
 .section .text
@@ -30,4 +30,3 @@ _start:
         hlt
 .Lhang:                   # Idle
         jmp .Lhang
-        .size _start, . - _start

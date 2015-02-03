@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include "gdt.h"
 #include "idt.h"
@@ -26,15 +27,16 @@ void main(struct multiboot_header *hdr, uint32_t magic)
 
     asm("sti");
 
-    for(;;)
-    {
-        ps2_set_leds(0x01);
-        ps2_set_leds(0x02);
-        ps2_set_leds(0x04);
-        ps2_set_leds(0x02);
-    }
-
     printf("Boot finished.\n");
     while(1)
-        ;
+    {
+        ps2_set_leds(0x01);
+        for(int i=0;i<1000000;++i);
+        ps2_set_leds(0x02);
+        for(int i=0;i<1000000;++i);
+        ps2_set_leds(0x04);
+        for(int i=0;i<1000000;++i);
+        ps2_set_leds(0x02);
+        for(int i=0;i<1000000;++i);
+    }
 }

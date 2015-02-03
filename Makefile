@@ -1,4 +1,4 @@
-OBJ = drivers/tty.o kernel/main.o boot/head.o kernel/io.o kernel/gdt-as.o kernel/gdt.o libc/stdio.o libc/string.o kernel/idt.o kernel/idt-as.o kernel/isr.o kernel/irq-as.o kernel/isr-as.o kernel/irq.o kernel/panic.o kernel/timer.o drivers/ps2.o
+OBJ := $(shell cat OBJ)
 CC = gcc
 LD = ld
 INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include
@@ -32,3 +32,4 @@ kappa.bin: $(OBJ) $(SOURCES) Makefile
 
 clean:
 	rm -f $(OBJ) kappa.iso kappa.bin
+	rm -rf isodir

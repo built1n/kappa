@@ -1,6 +1,7 @@
-#include "stdio.h"
 #include "tty.h"
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 int putchar(int ch)
 {
@@ -50,6 +51,9 @@ int printf(const char *fmt, ...)
                 break;
             case 'x':
                 print_hex(va_arg(ap, unsigned));
+                break;
+            case 'd':
+                puts(itoa(va_arg(ap, unsigned), 10));
                 break;
             default:
                 puts("printf: unknown format\n");

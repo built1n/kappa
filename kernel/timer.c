@@ -8,6 +8,7 @@ const uint64_t *current_tick = &current_tick_data;
 
 static void timer_callback(struct regs_t regs)
 {
+    (void) regs;
     ++current_tick_data;
 }
 

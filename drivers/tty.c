@@ -1,16 +1,37 @@
 #include <stdint.h>
 #include "io.h"
+#include "panic.h"
 #include "tty.h"
 #include "vga.h"
 
 static int term_x, term_y;
 static uint8_t term_col;
-/* VGA buffer starts at 0xB8000 */
+/* VGA buffer starts at 0xB8000 on color or 0xB0000 on monochrome */
 static uint16_t *term_buf;
+
+static uint16_t video_detect_hardware(void)
+{
+    const uint16_t *ptr = (const uint16_t*)0x410;
+    return *ptr;
+}
 
 void tty_init(void)
 {
-    term_buf = (uint16_t*)0xB8000;
+    uint16_t vid_type = video_detect_hardware() & 0x30;
+    if(vid_type == 0x20)
+    {
+        /* color */
+        term_buf = (uint16_t*)0xB8000;
+    }
+    else if(vid_type == 0x30)
+    {
+        term_buf = (uint16_t*)0xB0000;
+    }
+    else
+    {
+        /* none */
+        panic("TTY init failed!");
+    }
     tty_set_color(VGA_MAKE_COLOR(VGA_LIGHT_GRAY, VGA_BLACK));
     tty_clear();
 }
