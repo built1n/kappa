@@ -22,5 +22,14 @@ enum vga_color_t {
 #define VGA_WIDTH  80
 #define VGA_HEIGHT 25
 
+#define VGA_SEQ_INDEX           0x3C4
+#define VGA_SEQ_DATA            0x3C5
+#define VGA_GC_INDEX            0x3CE
+#define VGA_GC_DATA             0x3CF
+#define VGA_CRTC_INDEX          0x3D4
+#define VGA_CRTC_DATA           0x3D5
+
 #define VGA_MAKE_COLOR(fg, bg) (fg | bg << 4)
 #define VGA_MAKE_ENTRY(ch, col) (((uint16_t)ch)|((uint16_t)col<<8))
+
+void vga_init();
