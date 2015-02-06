@@ -23,7 +23,7 @@ static void ps2_handler(struct regs_t regs)
     (void) regs;
     uint8_t scancode = inb(0x60);
     /* TODO: handle scancode */
-    printf("key %x\n", scancode);
+    /*printf("key %x\n", scancode);*/
 }
 
 static void ps2_set_scancode_set(uint8_t set)
