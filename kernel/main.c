@@ -4,11 +4,14 @@
 #include "idt.h"
 #include "isr.h"
 #include "irq.h"
+#include "multiboot.h"
+#include "pcspkr.h"
 #include "ps2.h"
 #include "timer.h"
 #include "tty.h"
+#include "vga.h"
 
-void main(struct multiboot_header *hdr, uint32_t magic)
+void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     /* init the terminal first so we can get some output */
     tty_init();
@@ -31,12 +34,13 @@ void main(struct multiboot_header *hdr, uint32_t magic)
     while(1)
     {
         ps2_set_leds(0x01);
-        for(int i=0;i<1000000;++i);
+        for(int i=0;i<5000000;++i);
         ps2_set_leds(0x02);
-        for(int i=0;i<1000000;++i);
+        for(int i=0;i<5000000;++i);
         ps2_set_leds(0x04);
-        for(int i=0;i<1000000;++i);
+        for(int i=0;i<5000000;++i);
         ps2_set_leds(0x02);
-        for(int i=0;i<1000000;++i);
+        for(int i=0;i<5000000;++i);
     }
+
 }
