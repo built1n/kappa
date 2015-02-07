@@ -3,7 +3,8 @@ CC = gcc
 LD = ld
 INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include
 CFLAGS = -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g
-EMULATOR = qemu-system-i386
+QEMU = qemu-system-i386
+BOCHS = bochs
 
 AS = as
 ASFLAGS=-march=i686 --32
@@ -14,7 +15,11 @@ all: kappa.bin
 
 test: iso
 	@echo "EMULATOR kappa.iso"
-	@$(EMULATOR) kappa.iso
+	@$(QEMU) kappa.iso
+
+test-bochs: iso
+	@echo "BOCHS bochs.cfg"
+	@$(BOCHS) -f bochs.cfg -q
 
 iso: kappa.bin
 	@echo "Building ISO under $(ISODIR)/..."

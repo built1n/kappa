@@ -14,22 +14,18 @@
 
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
-    klog("main() called\n");
+    /* this should go to port e9, which is the Bochs debug port */
+    printf("Testing early I/O\n");
 
     /* initialize the TTY first, no real harm can be done */
     tty_init();
 
-    klog("tty done, magic %x\n", magic);
     if(magic != 0x2BADB002)
     {
         panic("Multiboot magic invalid");
     }
 
     vga_init((struct vbe_info_t*)hdr->vbe_mode_info);
-
-    klog("multiboot header address: %x\n", hdr);
-    klog("multiboot vbe info struct address: %x\n", hdr->vbe_mode_info);
-    klog("multiboot framebuffer: %x\n", ((struct vbe_info_t*)hdr->vbe_mode_info)->physbase);
 
     /* then the descriptor tables so we can do more useful stuff */
     gdt_init();
@@ -46,9 +42,12 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     asm("sti");
 
     printf("Boot finished.\n");
-    printf("Testing keyboard LED's...\n");
+
     for(int i=0;i<50;++i)
-        vga_drawpixel(i, i, 0x80808080);
+        vga_drawpixel(i, i, VGA_RGBPACK(255, 0, 0));
+
+    printf("Testing keyboard LED's...\n");
+
     while(1)
     {
         ps2_set_leds(PS2_NUM_LOCK);

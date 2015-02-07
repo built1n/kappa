@@ -5,35 +5,35 @@
 
 #define BOCHS_PUTCHAR(ch) (outb(0xe9, ch))
 
-static int eputchar(int ch)
+int log_putchar(int ch)
 {
     BOCHS_PUTCHAR(ch);
     return 0;
 }
 
-static int eputs(const char* str)
+int log_puts(const char* str)
 {
     while(*str)
-        putchar(*str++);
+        log_putchar(*str++);
     return 0;
 }
 
-static char ehex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
+static char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',
                               '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
-static void eprint_hex(unsigned int n)
+static void log_print_hex(unsigned int n)
 {
     unsigned mask = 0xF0000000;
     unsigned shift = 28;
     while(mask)
     {
-        eputchar(ehex_table[(n & mask) >> shift]);
+        log_putchar(hex_table[(n & mask) >> shift]);
         mask >>= 4;
         shift -= 4;
     }
 }
 
-int klog(const char *fmt, ...)
+int log(const char *fmt, ...)
 {
     va_list ap;
     va_start(ap, fmt);
@@ -47,25 +47,25 @@ int klog(const char *fmt, ...)
             switch(*fmt++)
             {
             case 'c':
-                eputchar(va_arg(ap, int));
+                log_putchar(va_arg(ap, int));
                 break;
             case 's':
-                eputs(va_arg(ap, const char*));
+                log_puts(va_arg(ap, const char*));
                 break;
             case 'x':
-                eprint_hex(va_arg(ap, unsigned));
+                log_print_hex(va_arg(ap, unsigned));
                 break;
             case 'd':
-                eputs(itoa(va_arg(ap, unsigned), 10));
+                log_puts(itoa(va_arg(ap, unsigned), 10));
                 break;
             default:
-                eputs("klog: unknown format\n");
+                log_puts("klog: unknown format\n");
                 break;
             }
             break;
         }
         default:
-            eputchar(ch);
+            log_putchar(ch);
             break;
         }
     }

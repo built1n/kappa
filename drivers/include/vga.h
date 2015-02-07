@@ -31,5 +31,8 @@ enum vga_color_t {
 
 #define VGA_MAKE_COLOR(fg, bg) (fg | bg << 4)
 #define VGA_MAKE_ENTRY(ch, col) (((uint16_t)ch)|((uint16_t)col<<8))
+#define VGA_RGBPACK(r, g, b)  ((r << 16)|(g << 8)|(b << 0))
 
 void vga_init();
+
+void vga_drawpixel(int x, int y, uint32_t pix);

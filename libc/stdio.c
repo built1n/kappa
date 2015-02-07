@@ -1,18 +1,31 @@
-#include "tty.h"
+#include "log.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+static void (*putchar_ptr)(char) = log_putchar;
+static void (*puts_ptr)(const char*) = log_puts;
+
 int putchar(int ch)
 {
-    tty_putchar((char)ch);
+    putchar_ptr((char)ch);
     return 0;
 }
 
 int puts(const char* str)
 {
-    tty_puts(str);
+    puts_ptr(str);
     return 0;
+}
+
+void set_putchar(void (*func)(char))
+{
+    putchar_ptr = func;
+}
+
+void set_puts(void (*func)(const char*))
+{
+    puts_ptr = func;
 }
 
 static char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',

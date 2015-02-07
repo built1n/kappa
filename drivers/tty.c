@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "io.h"
 #include "panic.h"
 #include "tty.h"
@@ -34,6 +35,8 @@ void tty_init(void)
     }
     tty_set_color(VGA_MAKE_COLOR(VGA_LIGHT_GRAY, VGA_BLACK));
     tty_clear();
+    set_putchar(tty_putchar);
+    set_puts(tty_puts);
 }
 
 static void move_cursor(uint16_t cursor_idx)
