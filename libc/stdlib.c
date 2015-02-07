@@ -34,5 +34,6 @@ int rand(void)
 
 void srand(unsigned int seed)
 {
-    rand_state = seed;
+    /* prevent a zero seed */
+    rand_state = (!seed?42:seed);
 }

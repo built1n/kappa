@@ -1,8 +1,8 @@
 boot/head.o
+drivers/gfx.o
 drivers/pcspkr.o
 drivers/ps2.o
 drivers/tty.o
-drivers/vga.o
 kernel/gdt-as.o
 kernel/gdt.o
 kernel/idt-as.o

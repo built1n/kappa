@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "gdt.h"
+#include "gfx.h"
 #include "idt.h"
 #include "isr.h"
 #include "irq.h"
@@ -12,22 +13,23 @@
 #include "ps2.h"
 #include "timer.h"
 #include "tty.h"
-#include "vga.h"
 
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     /* this should go to port e9, which is the Bochs debug port */
     printf("Testing early I/O\n");
 
-    /* initialize the TTY first, no real harm can be done */
-    tty_init();
+    printf("GFX init\n");
+    int gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
+
+    /* if graphical initialization fails, fall back to text mode */
+    if(!gfx_status)
+        tty_init();
 
     if(magic != 0x2BADB002)
     {
         panic("Multiboot magic invalid");
     }
-
-    vga_init((struct vbe_info_t*)hdr->vbe_mode_info);
 
     /* then the descriptor tables so we can do more useful stuff */
     gdt_init();
@@ -49,7 +51,13 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     srand(*current_tick);
 
     for(int i=0;i>=0;++i)
-        vga_drawpixel(rand() % *vga_width, rand() % *vga_height, rand() % 0xFFFFFF);
+    {
+        int rx = rand() % *gfx_width;
+        int ry = rand() % *gfx_height;
+
+        gfx_drawpixel(rx, ry, rand() % 0xFFFFFF);
+    }
+    gfx_clear(0xffffff);
 
     printf("Testing keyboard LED's...\n");
 

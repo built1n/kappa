@@ -1,9 +1,9 @@
 #include <stdint.h>
 #include <stdio.h>
+#include "gfx.h"
 #include "io.h"
 #include "panic.h"
 #include "tty.h"
-#include "vga.h"
 
 static int term_x, term_y;
 static uint8_t term_col;

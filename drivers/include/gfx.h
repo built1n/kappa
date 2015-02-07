@@ -22,23 +22,19 @@ enum vga_color_t {
 #define VGA_WIDTH  80
 #define VGA_HEIGHT 25
 
-#define VGA_SEQ_INDEX           0x3C4
-#define VGA_SEQ_DATA            0x3C5
-#define VGA_GC_INDEX            0x3CE
-#define VGA_GC_DATA             0x3CF
-#define VGA_CRTC_INDEX          0x3D4
-#define VGA_CRTC_DATA           0x3D5
-
 #define VGA_MAKE_COLOR(fg, bg) (fg | bg << 4)
 #define VGA_MAKE_ENTRY(ch, col) (((uint16_t)ch)|((uint16_t)col<<8))
 #define VGA_RGBPACK(r, g, b)  ((r << 16)|(g << 8)|(b << 0))
 
+#define GFX_WHITE 0xFFFFFF
+#define GFX_BLACK 0x000000
+
 struct vbe_info_t;
 
-void vga_init(struct vbe_info_t *vbe_mode_info);
+void gfx_init(struct vbe_info_t *vbe_mode_info);
 
-void vga_drawpixel(int x, int y, uint32_t color);
+void gfx_drawpixel(int x, int y, uint32_t color);
 
-void vga_clear(uint32_t color);
+void gfx_clear(uint32_t color);
 
-extern const uint16_t *vga_width, *vga_height;
+extern const uint16_t *gfx_width, *gfx_height;
