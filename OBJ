@@ -2,6 +2,7 @@ boot/head.o
 drivers/pcspkr.o
 drivers/ps2.o
 drivers/tty.o
+drivers/vga.o
 kernel/gdt-as.o
 kernel/gdt.o
 kernel/idt-as.o
@@ -11,6 +12,7 @@ kernel/irq-as.o
 kernel/irq.o
 kernel/isr-as.o
 kernel/isr.o
+kernel/log.o
 kernel/main.o
 kernel/panic.o
 kernel/timer.o
