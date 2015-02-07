@@ -1,11 +1,13 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
 #include "irq.h"
 #include "log.h"
 #include "multiboot.h"
+#include "panic.h"
 #include "pcspkr.h"
 #include "ps2.h"
 #include "timer.h"
@@ -36,15 +38,18 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     irq_init();
 
     /* initialize other drivers */
-    timer_init();
+    timer_init(HZ);
     ps2_init();
 
     asm("sti");
 
     printf("Boot finished.\n");
 
-    for(int i=0;i<50;++i)
-        vga_drawpixel(i, i, VGA_RGBPACK(255, 0, 0));
+    printf("Testing RNG...\n");
+    srand(*current_tick);
+
+    for(int i=0;i>=0;++i)
+        vga_drawpixel(rand() % *vga_width, rand() % *vga_height, rand() % 0xFFFFFF);
 
     printf("Testing keyboard LED's...\n");
 

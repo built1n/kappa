@@ -17,9 +17,9 @@ multiboot_header:
         .long 0
         .long 0
         .long 0
-        .long 320
-        .long 200
-        .long 32
+        .long 0 # screen height (don't care)
+        .long 0 # screen width (don't care)
+        .long 32 # screen BPP: MUST be 32
 
 .section .stack
 stack_bottom:                   # Stack grows up in addresses, so bottom is

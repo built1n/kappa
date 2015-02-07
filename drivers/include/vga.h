@@ -33,6 +33,12 @@ enum vga_color_t {
 #define VGA_MAKE_ENTRY(ch, col) (((uint16_t)ch)|((uint16_t)col<<8))
 #define VGA_RGBPACK(r, g, b)  ((r << 16)|(g << 8)|(b << 0))
 
-void vga_init();
+struct vbe_info_t;
 
-void vga_drawpixel(int x, int y, uint32_t pix);
+void vga_init(struct vbe_info_t *vbe_mode_info);
+
+void vga_drawpixel(int x, int y, uint32_t color);
+
+void vga_clear(uint32_t color);
+
+extern const uint16_t *vga_width, *vga_height;

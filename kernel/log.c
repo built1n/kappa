@@ -5,17 +5,15 @@
 
 #define BOCHS_PUTCHAR(ch) (outb(0xe9, ch))
 
-int log_putchar(int ch)
+void log_putchar(int ch)
 {
     BOCHS_PUTCHAR(ch);
-    return 0;
 }
 
-int log_puts(const char* str)
+void log_puts(const char* str)
 {
     while(*str)
         log_putchar(*str++);
-    return 0;
 }
 
 static char hex_table[16] = { '0', '1', '2', '3', '4', '5', '6', '7',

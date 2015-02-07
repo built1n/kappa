@@ -13,3 +13,26 @@ char* itoa(int val, int base)
 
     return &buf[i+1];
 }
+
+static int rand_state = 42;
+
+/* some constants for the RNG */
+#define A 48271
+#define M 2147483647
+#define Q (M/A)
+#define R (M%A)
+
+int rand(void)
+{
+    int tmp = A * (rand_state % Q) - R * (rand_state / Q);
+    if(tmp >= 0)
+        rand_state = tmp;
+    else
+        rand_state = tmp + M;
+    return rand_state;
+}
+
+void srand(unsigned int seed)
+{
+    rand_state = seed;
+}

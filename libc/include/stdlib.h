@@ -2,3 +2,6 @@
 
 /* NOT reentrant! */
 char* itoa(int val, int base);
+
+int rand(void);
+void srand(unsigned int);
