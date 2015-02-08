@@ -54,6 +54,12 @@ void gfx_set_background(uint32_t);
 
 uint32_t gfx_get_background(void);
 
+void gfx_hline(int x1, int x2, int y);
+
+void gfx_vline(int y1, int y2, int x);
+
+void gfx_fillrect(int x1, int y1, int w, int h);
+
 extern const uint16_t *gfx_width, *gfx_height;
 
 /* this is _BYTES_ per pixel, NOT BITS per pixel! */

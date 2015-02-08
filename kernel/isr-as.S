@@ -60,155 +60,155 @@ isr_stub:
 
 _isr0:
     cli
-    push $0
-    push $0
+    pushl $0
+    pushl $0
     jmp isr_stub
 _isr1:
     cli
-    push $0
-    push $1
+    pushl $0
+    pushl $1
     jmp isr_stub
 _isr2:
     cli
-    push $0
-    push $2
+    pushl $0
+    pushl $2
     jmp isr_stub
 _isr3:
     cli
-    push $0
-    push $3
+    pushl $0
+    pushl $3
     jmp isr_stub
 _isr4:
     cli
-    push $0
-    push $4
+    pushl $0
+    pushl $4
     jmp isr_stub
 _isr5:
     cli
-    push $0
-    push $5
+    pushl $0
+    pushl $5
     jmp isr_stub
 _isr6:
     cli
-    push $0
-    push $6
+    pushl $0
+    pushl $6
     jmp isr_stub
 _isr7:
     cli
-    push $0
-    push $7
+    pushl $0
+    pushl $7
     jmp isr_stub
 _isr8:
     cli
-    push $8
+    pushl $8
     jmp isr_stub
 _isr9:
     cli
-    push $0
-    push $9
+    pushl $0
+    pushl $9
     jmp isr_stub
 _isr10:
     cli
-    push $10
+    pushl $10
     jmp isr_stub
 _isr11:
     cli
-    push $11
+    pushl $11
     jmp isr_stub
 _isr12:
     cli
-    push $12
+    pushl $12
     jmp isr_stub
 _isr13:
     cli
-    push $13
+    pushl $13
     jmp isr_stub
 _isr14:
     cli
-    push $14
+    pushl $14
     jmp isr_stub
 _isr15:
     cli
-    push $0
-    push $15
+    pushl $0
+    pushl $15
     jmp isr_stub
 _isr16:
     cli
-    push $0
-    push $16
+    pushl $0
+    pushl $16
     jmp isr_stub
 _isr17:
     cli
-    push $0
-    push $17
+    pushl $0
+    pushl $17
     jmp isr_stub
 _isr18:
     cli
-    push $0
-    push $18
+    pushl $0
+    pushl $18
     jmp isr_stub
 _isr19:
     cli
-    push $0
-    push $19
+    pushl $0
+    pushl $19
     jmp isr_stub
 _isr20:
     cli
-    push $0
-    push $20
+    pushl $0
+    pushl $20
     jmp isr_stub
 _isr21:
     cli
-    push $0
-    push $21
+    pushl $0
+    pushl $21
     jmp isr_stub
 _isr22:
     cli
-    push $0
-    push $22
+    pushl $0
+    pushl $22
     jmp isr_stub
 _isr23:
     cli
-    push $0
-    push $23
+    pushl $0
+    pushl $23
     jmp isr_stub
 _isr24:
     cli
-    push $0
-    push $24
+    pushl $0
+    pushl $24
     jmp isr_stub
 _isr25:
     cli
-    push $0
-    push $25
+    pushl $0
+    pushl $25
     jmp isr_stub
 _isr26:
     cli
-    push $0
-    push $26
+    pushl $0
+    pushl $26
     jmp isr_stub
 _isr27:
     cli
-    push $0
-    push $27
+    pushl $0
+    pushl $27
     jmp isr_stub
 _isr28:
     cli
-    push $0
-    push $28
+    pushl $0
+    pushl $28
     jmp isr_stub
 _isr29:
     cli
-    push $0
-    push $29
+    pushl $0
+    pushl $29
     jmp isr_stub
 _isr30:
     cli
-    push $0
-    push $30
+    pushl $0
+    pushl $30
     jmp isr_stub
 _isr31:
     cli
-    push $0
-    push $31
+    pushl $0
+    pushl $31
     jmp isr_stub

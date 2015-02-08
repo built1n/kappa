@@ -3,8 +3,8 @@ CC = gcc
 LD = ld
 INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include -Iapps/
 
-CFLAGS := -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g -O1 -mtune=generic -msse
-CFLAGS += -fexpensive-optimizations -ftree-loop-vectorize -finline-functions -fomit-frame-pointer -ftree-vectorize
+CFLAGS = -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g
+OPTFLAGS = -fexpensive-optimizations -ftree-loop-vectorize -finline-functions -fomit-frame-pointer -ftree-vectorize -O1 -mtune=generic
 
 QEMU = qemu-system-i386
 BOCHS = bochs
@@ -37,13 +37,19 @@ iso: kappa.bin
 kappa.bin: $(OBJ) $(SOURCES) Makefile
 	@$(LD) -T kernel/linker.ld -o kappa.bin -melf_i386 $(OBJ)
 	@echo "LD $@"
-%.o: %.c Makefile
-	@$(CC) $(CFLAGS) -c $< -o $@
+
+drivers/gfx.o: drivers/gfx.c Makefile
 	@echo "CC $<"
+	@$(CC) $(CFLAGS) -O3 -msse -c $< -o $@
+
+%.o: %.c Makefile
+	@echo "CC $<"
+	@$(CC) $(CFLAGS) $(OPTFLAGS) -c $< -o $@
+
 
 %.o: %.S Makefile
-	@$(AS) $(ASFLAGS) -c $< -o $@
 	@echo "AS $<"
+	@$(AS) $(ASFLAGS) -c $< -o $@
 clean:
 	@echo "Cleaning build directory..."
 	@rm -f $(OBJ) kappa.iso kappa.bin

@@ -44,96 +44,96 @@ irq_stub:
 
 _irq0:
         cli
-        push $0
-        push $32
+        pushl $0
+        pushl $32
         jmp irq_stub
 
 _irq1:
         cli
-        push $0
-        push $33
+        pushl $0
+        pushl $33
         jmp irq_stub
 
 _irq2:
         cli
-        push $0
-        push $34
+        pushl $0
+        pushl $34
         jmp irq_stub
 
 _irq3:
         cli
-        push $0
-        push $35
+        pushl $0
+        pushl $35
         jmp irq_stub
 
 _irq4:
         cli
-        push $0
-        push $36
+        pushl $0
+        pushl $36
         jmp irq_stub
 
 _irq5:
         cli
-        push $0
-        push $37
+        pushl $0
+        pushl $37
         jmp irq_stub
 
 _irq6:
         cli
-        push $0
-        push $38
+        pushl $0
+        pushl $38
         jmp irq_stub
 
 _irq7:
         cli
-        push $0
-        push $39
+        pushl $0
+        pushl $39
         jmp irq_stub
 
 _irq8:
         cli
-        push $0
-        push $40
+        pushl $0
+        pushl $40
         jmp irq_stub
 
 _irq9:
         cli
-        push $0
-        push $41
+        pushl $0
+        pushl $41
         jmp irq_stub
 
 _irq10:
         cli
-        push $0
-        push $42
+        pushl $0
+        pushl $42
         jmp irq_stub
 
 _irq11:
         cli
-        push $0
-        push $43
+        pushl $0
+        pushl $43
         jmp irq_stub
 
 _irq12:
         cli
-        push $0
-        push $44
+        pushl $0
+        pushl $44
         jmp irq_stub
 
 _irq13:
         cli
-        push $0
-        push $45
+        pushl $0
+        pushl $45
         jmp irq_stub
 
 _irq14:
         cli
-        push $0
-        push $46
+        pushl $0
+        pushl $46
         jmp irq_stub
 
 _irq15:
         cli
-        push $0
-        push $47
+        pushl $0
+        pushl $47
         jmp irq_stub

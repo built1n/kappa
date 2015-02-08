@@ -19,7 +19,7 @@ void gpf(struct regs_t regs)
 {
     printf("General protection fault!\n");
     printf("EIP before fault: 0x%x\n", regs.eip);
-    printf("Error code: %d\n", regs.err_code);
+    printf("Error code: 0x%x\n", regs.err_code);
     panic("GPF");
 }
 
@@ -78,6 +78,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             gfx_drawpixel(rx, ry);
         }
         int endpix = *current_tick;
+
         int startfill = *current_tick;
         for(int i=0;i<1000;++i)
         {
@@ -97,11 +98,43 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             gfx_drawchar(rx, ry, rand()%127+1);
         }
         int endtext = *current_tick;
+        gfx_clear();
+
+        int starthline = *current_tick;
+        for(int i=0;i<1000000;++i)
+        {
+            gfx_hline(rand() % *gfx_width, rand() % *gfx_width, rand() % *gfx_height);
+        }
+        int endhline = *current_tick;
+
+        gfx_clear();
+
+        int startvline = *current_tick;
+        for(int i=0;i<1000000;++i)
+        {
+            gfx_vline(rand() % *gfx_height, rand() % *gfx_height, rand() % *gfx_width);
+        }
+        int endvline = *current_tick;
+
+        int startrect = *current_tick;
+        for(int i=0;i<1000;++i)
+        {
+            int x = rand() % *gfx_width;
+            int y = rand() % *gfx_height;
+            int w = rand() % (*gfx_width - x);
+            int h = rand() % (*gfx_height - y);
+            gfx_fillrect(x, y, w, h);
+        }
+        int endrect = *current_tick;
+
         gfx_reset();
         printf("--- Graphics benchmark results ---\n");
         printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
         printf("Ticks for 1,000 random fills:      %d\n", endfill-startfill);
         printf("Ticks for 1,000,000 random chars:  %d\n", endtext-starttext);
+        printf("Ticks for 1,000,000 random hlines: %d\n", endhline-starthline);
+        printf("Ticks for 1,000,000 random vlines: %d\n", endvline-startvline);
+        printf("Ticks for 1,000 random rects:      %d\n", endrect-startrect);
         printf("Ticks per second:                  %d\n", HZ);
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
@@ -119,5 +152,4 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         ps2_set_leds(PS2_CAPS_LOCK);
         timer_delay(HZ/4);
     }
-    while(1);
 }

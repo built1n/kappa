@@ -15,6 +15,7 @@ uint16_t fb_height;
 
 /* this is BYTES per pixel */
 uint8_t  fb_bpp;
+uint16_t fb_stride;
 const uint8_t *gfx_bpp = &fb_bpp;
 
 const uint16_t *gfx_width = &fb_width;
@@ -73,19 +74,18 @@ void gfx_reset(void)
 
 void gfx_drawchar(int x, int y, char c)
 {
-    int stride = fb_bpp * fb_width;
-    uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * stride);
+    uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_stride);
+    const uint32_t bg = _gfx_bgcol;
+    const uint32_t fg = _gfx_fgcol;
     for(int i = 0; i < FONT_HEIGHT; ++i)
     {
-        uint32_t line_buf[8] = {_gfx_bgcol};
-        uint8_t mask = 0x80;
-        for(int j = 0; j < 8; ++j, mask >>= 1)
+        uint8_t mask_table[8] = {128, 64, 32, 16, 8, 4, 2, 1};
+        for(int j = 0; j < 8; ++j)
         {
-            if(gfx_font[(int)c][i] & mask)
-                line_buf[j] = _gfx_fgcol;
+            if(gfx_font[c][i] & mask_table[j])
+                ((uint32_t*)line_addr)[j] = fg;
         }
-        memcpy(line_addr, line_buf, sizeof(line_buf));
-        line_addr += stride;
+        line_addr += fb_stride;
     }
 }
 
@@ -126,12 +126,67 @@ void gfx_puts(const char* str)
     }
 }
 
+/* implemented in assembly */
+#if 0
+void gfx_hline(int x1, int x2, int y)
+{
+    /* make sure x1 is to the left of x2 */
+    if(x2 < x1)
+    {
+        int temp = x1;
+        x1 = x2;
+        x2 = temp;
+    }
+
+    uint8_t *base = framebuffer + y * fb_stride;
+
+    uint8_t *dest = base + x1 * fb_bpp;
+    uint8_t *stop = base + x2 * fb_bpp;
+    const uint32_t col = _gfx_fgcol;
+    while(dest < stop)
+    {
+        *(uint32_t*)dest = col;
+        dest += fb_bpp;
+    }
+}
+
+void gfx_vline(int y1, int y2, int x)
+{
+    /* make sure y1 is above y2 */
+    if(y2 < y1)
+    {
+        int temp = y1;
+        y1 = y2;
+        y2 = temp;
+    }
+
+    uint8_t *dest = framebuffer + y1 * fb_stride + x * fb_bpp;
+    uint8_t *stop = framebuffer + y2 * fb_stride + x * fb_bpp;
+    const uint32_t col = _gfx_fgcol;
+    while(dest < stop)
+    {
+        *(uint32_t*)dest = col;
+        dest += fb_stride;
+    }
+}
+#endif
+
+#define SWAP(x, y, tmp) (tmp=x;x=y;y=tmp;)
+void gfx_fillrect(int x, int y, int w, int h)
+{
+    for(int i = 0; i < h; ++i)
+    {
+        gfx_hline(x, x + w, y + i);
+    }
+}
+
 bool gfx_init(struct vbe_info_t *vbe_mode_info)
 {
     framebuffer = (uint8_t*)vbe_mode_info->physbase;
     fb_width = vbe_mode_info->Xres;
     fb_height = vbe_mode_info->Yres;
     fb_bpp = vbe_mode_info->bpp / 8;
+    fb_stride = fb_bpp * fb_width;
     if(fb_bpp != 4)
     {
         printf("WARNING: BPP != 32, falling back to text mode...\n");
