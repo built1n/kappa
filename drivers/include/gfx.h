@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include <stdint.h>
 
 enum vga_color_t {
@@ -31,7 +32,7 @@ enum vga_color_t {
 
 struct vbe_info_t;
 
-void gfx_init(struct vbe_info_t *vbe_mode_info);
+bool gfx_init(struct vbe_info_t *vbe_mode_info);
 
 void gfx_drawpixel(int x, int y, uint32_t color);
 

@@ -1,5 +1,6 @@
 boot/head.o
 drivers/gfx.o
+drivers/gfx_font.o
 drivers/pcspkr.o
 drivers/ps2.o
 drivers/tty.o

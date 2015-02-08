@@ -1,3 +1,5 @@
+/* this is both a PS/2 keyboard AND a PS/2 MOUSE driver */
+
 #include <stdint.h>
 
 #define PS2_SCROLL_LOCK (1 << 0)

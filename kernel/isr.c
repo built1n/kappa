@@ -19,13 +19,12 @@ void isr_handler(struct regs_t regs)
     }
     else
     {
-        printf("WARNING: unhandled ISR!\n");
+        printf("WARNING: unhandled ISR 0x%x!\n", regs.int_no);
     }
 }
 
 void isr_init(void)
 {
-    printf("ISR handlers installed.\n");
     idt_set_gate(0, (uint32_t)_isr0, 0x08, 0x8E);
     idt_set_gate(1, (uint32_t)_isr1, 0x08, 0x8E);
     idt_set_gate(2, (uint32_t)_isr2, 0x08, 0x8E);

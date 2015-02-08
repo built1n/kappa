@@ -26,7 +26,6 @@ void irq_remap(void)
 void irq_init(void)
 {
     irq_remap();
-    printf("IRQ handlers installed.\n");
     idt_set_gate(32, (uint32_t)_irq0, 0x08, 0x8E);
     idt_set_gate(33, (uint32_t)_irq1, 0x08, 0x8E);
     idt_set_gate(34, (uint32_t)_irq2, 0x08, 0x8E);

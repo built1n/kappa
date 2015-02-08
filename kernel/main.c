@@ -20,11 +20,22 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     printf("Testing early I/O\n");
 
     printf("GFX init\n");
-    int gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
+    bool gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
+
+    puts("test123\n");
+    putchar('1');
+    putchar('2');
+    putchar('\n');
+    putchar('1');
+    putchar('2');
+    gfx_drawchar(0, 12, 'a', 0xffffff, 0);
 
     /* if graphical initialization fails, fall back to text mode */
     if(!gfx_status)
+    {
         tty_init();
+        printf("Graphics init failed, fell back to text mode.\n");
+    }
 
     if(magic != 0x2BADB002)
     {
@@ -45,21 +56,30 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     asm("sti");
 
-    printf("Boot finished.\n");
+    //printf("Boot finished.\n");
 
-    printf("Testing RNG...\n");
+    //printf("Testing RNG...\n");
     srand(*current_tick);
 
-    for(int i=0;i>=0;++i)
+    if(gfx_status)
     {
-        int rx = rand() % *gfx_width;
-        int ry = rand() % *gfx_height;
+        /*
+        for(int i=0;i<100000;++i)
+        {
+            int rx = rand() % *gfx_width;
+            int ry = rand() % *gfx_height;
 
-        gfx_drawpixel(rx, ry, rand() % 0xFFFFFF);
+            gfx_drawpixel(rx, ry, rand() % 0xFFFFFF);
+        }
+        int start = *current_tick;
+        for(int i=0;i<1000;++i)
+            gfx_clear(0xff00ff);
+        int end = *current_tick;
+        printf("ticks for 1000 fills: %x\n", end-start);
+        */
     }
-    gfx_clear(0xffffff);
 
-    printf("Testing keyboard LED's...\n");
+    // printf("Testing keyboard LED's...\n");
 
     while(1)
     {
