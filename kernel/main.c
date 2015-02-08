@@ -55,18 +55,34 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     if(gfx_status)
     {
-        for(int i=0;i<100000;++i)
+        int startpix = *current_tick;
+        for(int i=0;i<1000000;++i)
         {
             int rx = rand() % *gfx_width;
             int ry = rand() % *gfx_height;
 
             gfx_drawpixel(rx, ry, rand() % 0xFFFFFF);
         }
-        int start = *current_tick;
-        for(int i=0;i<1000;++i)
-            gfx_clear(0xff00ff);
-        int end = *current_tick;
-        printf("ticks for 1000 fills: %x\n", end-start);
+        int endpix = *current_tick;
+        int startfill = *current_tick;
+        for(int i=0;i<100;++i)
+            gfx_clear(rand() % 0xFFFFFF);
+        int endfill = *current_tick;
+
+        int starttext = *current_tick;
+        for(int i=0;i<1000000;++i)
+        {
+            int rx = rand() % *gfx_width;
+            int ry = rand() % *gfx_height;
+            gfx_drawchar(rx, ry, 'A', VGA_RGBPACK(0xff, 0xff, 0xff), 0);
+        }
+        int endtext = *current_tick;
+        gfx_reset();
+        printf("--- Graphics benchmark results ---\n");
+        printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
+        printf("Ticks for 100 random fills:        %d\n", endfill-startfill);
+        printf("Ticks for 1,000,000 chars:         %d\n", endtext-starttext);
+        printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
 
     printf("Testing keyboard LED's...\n");

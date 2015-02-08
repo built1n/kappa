@@ -15,9 +15,13 @@ static uint16_t fb_height;
 
 /* this is BYTES per pixel */
 static uint8_t  fb_bpp;
+const uint8_t *gfx_bpp = &fb_bpp;
 
 const uint16_t *gfx_width = &fb_width;
 const uint16_t *gfx_height = &fb_height;
+
+static int cursor_x, cursor_y;
+static uint32_t fgcol, bgcol;
 
 void gfx_drawpixel(int x, int y, uint32_t col)
 {
@@ -33,6 +37,15 @@ void gfx_clear(uint32_t col)
         *(uint32_t*)p = col;
         p += fb_bpp;
     }
+}
+
+void gfx_reset(void)
+{
+    gfx_clear(VGA_RGBPACK(0, 0, 0));
+    cursor_y = 0;
+    cursor_x = 0;
+    fgcol = VGA_RGBPACK(0xff, 0xff, 0xff);
+    bgcol = VGA_RGBPACK(0, 0, 0);
 }
 
 void gfx_drawchar(int x, int y, char c, uint32_t fg, uint32_t bg)
@@ -52,9 +65,6 @@ void gfx_drawchar(int x, int y, char c, uint32_t fg, uint32_t bg)
         line_addr += stride;
     }
 }
-
-static int cursor_x, cursor_y;
-static uint32_t fgcol, bgcol;
 
 void gfx_putchar(char ch)
 {
@@ -104,11 +114,7 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
         printf("WARNING: BPP != 32, falling back to text mode...\n");
         return false;
     }
-    gfx_clear(VGA_RGBPACK(0, 0, 0));
-    cursor_y = 0;
-    cursor_x = 0;
-    fgcol = VGA_RGBPACK(0xff, 0xff, 0xff);
-    bgcol = VGA_RGBPACK(0, 0, 0);
+    gfx_reset();
     set_putchar(gfx_putchar);
     set_puts(gfx_puts);
 

@@ -17,8 +17,8 @@ multiboot_header:
         .long 0
         .long 0
         .long 0 # 1=text mode
-        .long 0 # screen height (don't care)
-        .long 0 # screen width (don't care)
+        .long 640 # screen height (don't care)
+        .long 480 # screen width (don't care)
         .long 32 # screen BPP: MUST be 32
 
 .section .stack

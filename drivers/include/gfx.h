@@ -36,6 +36,17 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info);
 
 void gfx_drawpixel(int x, int y, uint32_t color);
 
+void gfx_drawchar(int x, int y, char c, uint32_t fg, uint32_t bg);
+
+void gfx_putchar(char ch);
+
+void gfx_puts(const char* str);
+
 void gfx_clear(uint32_t color);
 
+void gfx_reset(void);
+
 extern const uint16_t *gfx_width, *gfx_height;
+
+/* this is _BYTES_ per pixel, NOT BITS per pixel! */
+extern const uint8_t *gfx_bpp;
