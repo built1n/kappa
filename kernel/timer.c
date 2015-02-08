@@ -32,5 +32,6 @@ void timer_init(uint32_t freq)
 void timer_delay(uint64_t ticks)
 {
     uint64_t end = *current_tick + ticks;
-    while(*current_tick <= end);
+    while(*current_tick <= end)
+        asm("hlt");
 }

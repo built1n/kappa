@@ -34,17 +34,25 @@ struct vbe_info_t;
 
 bool gfx_init(struct vbe_info_t *vbe_mode_info);
 
-void gfx_drawpixel(int x, int y, uint32_t color);
+void gfx_drawpixel(int x, int y);
 
-void gfx_drawchar(int x, int y, char c, uint32_t fg, uint32_t bg);
+void gfx_drawchar(int x, int y, char ch);
 
 void gfx_putchar(char ch);
 
 void gfx_puts(const char* str);
 
-void gfx_clear(uint32_t color);
+void gfx_clear(void);
 
 void gfx_reset(void);
+
+void gfx_set_foreground(uint32_t);
+
+uint32_t gfx_get_foreground(void);
+
+void gfx_set_background(uint32_t);
+
+uint32_t gfx_get_background(void);
 
 extern const uint16_t *gfx_width, *gfx_height;
 

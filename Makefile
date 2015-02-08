@@ -1,13 +1,16 @@
 OBJ := $(shell cat OBJ)
 CC = gcc
 LD = ld
-INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include
-CFLAGS = -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g
+INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include -Iapps/
+
+CFLAGS := -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g -O1 -mtune=generic -msse
+CFLAGS += -fexpensive-optimizations -ftree-loop-vectorize -finline-functions -fomit-frame-pointer -ftree-vectorize
+
 QEMU = qemu-system-i386
 BOCHS = bochs
 
 AS = as
-ASFLAGS=-march=i686 --32
+ASFLAGS = -march=i686 --32
 
 ISODIR = isodir
 
@@ -34,11 +37,11 @@ iso: kappa.bin
 kappa.bin: $(OBJ) $(SOURCES) Makefile
 	@$(LD) -T kernel/linker.ld -o kappa.bin -melf_i386 $(OBJ)
 	@echo "LD $@"
-%.o: %.c
+%.o: %.c Makefile
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "CC $<"
 
-%.o: %.S
+%.o: %.S Makefile
 	@$(AS) $(ASFLAGS) -c $< -o $@
 	@echo "AS $<"
 clean:

@@ -11,11 +11,22 @@
 #include "panic.h"
 #include "pcspkr.h"
 #include "ps2.h"
+#include "fpu.h"
 #include "timer.h"
 #include "tty.h"
 
+void gpf(struct regs_t regs)
+{
+    printf("General protection fault!\n");
+    printf("EIP before fault: 0x%x\n", regs.eip);
+    printf("Error code: %d\n", regs.err_code);
+    panic("GPF");
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
+    fpu_enable();
+    asm("movq %xmm0, %xmm0");
     /* this should go to port e9, which is the Bochs debug port */
     printf("Testing early I/O\n");
 
@@ -46,6 +57,8 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     timer_init(HZ);
     ps2_init();
 
+    set_interrupt_handler(0xd, gpf);
+
     asm("sti");
 
     printf("Boot finished.\n");
@@ -61,27 +74,35 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             int rx = rand() % *gfx_width;
             int ry = rand() % *gfx_height;
 
-            gfx_drawpixel(rx, ry, rand() % 0xFFFFFF);
+            gfx_set_foreground(rand() % 0x1000000);
+            gfx_drawpixel(rx, ry);
         }
         int endpix = *current_tick;
         int startfill = *current_tick;
-        for(int i=0;i<100;++i)
-            gfx_clear(rand() % 0xFFFFFF);
+        for(int i=0;i<1000;++i)
+        {
+            gfx_set_background(rand() % 0x1000000);
+            gfx_clear();
+        }
         int endfill = *current_tick;
 
+        gfx_set_background(0);
+        gfx_set_foreground(0xFFFFFF);
+        gfx_clear();
         int starttext = *current_tick;
         for(int i=0;i<1000000;++i)
         {
             int rx = rand() % *gfx_width;
             int ry = rand() % *gfx_height;
-            gfx_drawchar(rx, ry, 'A', VGA_RGBPACK(0xff, 0xff, 0xff), 0);
+            gfx_drawchar(rx, ry, rand()%127+1);
         }
         int endtext = *current_tick;
         gfx_reset();
         printf("--- Graphics benchmark results ---\n");
         printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
-        printf("Ticks for 100 random fills:        %d\n", endfill-startfill);
-        printf("Ticks for 1,000,000 chars:         %d\n", endtext-starttext);
+        printf("Ticks for 1,000 random fills:      %d\n", endfill-startfill);
+        printf("Ticks for 1,000,000 random chars:  %d\n", endtext-starttext);
+        printf("Ticks per second:                  %d\n", HZ);
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
 
@@ -90,12 +111,13 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     while(1)
     {
         ps2_set_leds(PS2_NUM_LOCK);
-        for(int i=0;i<50000000;++i);
+        timer_delay(HZ/4);
         ps2_set_leds(PS2_CAPS_LOCK);
-        for(int i=0;i<50000000;++i);
+        timer_delay(HZ/4);
         ps2_set_leds(PS2_SCROLL_LOCK);
-        for(int i=0;i<50000000;++i);
+        timer_delay(HZ/4);
         ps2_set_leds(PS2_CAPS_LOCK);
-        for(int i=0;i<50000000;++i);
+        timer_delay(HZ/4);
     }
+    while(1);
 }
