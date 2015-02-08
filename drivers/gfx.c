@@ -38,8 +38,8 @@ void gfx_clear(uint32_t col)
 void gfx_drawchar(int x, int y, char c, uint32_t fg, uint32_t bg)
 {
     int stride = fb_bpp * fb_width;
-    uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_width * fb_bpp);
-    for(int i = y; i < y + FONT_HEIGHT; ++i)
+    uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * stride);
+    for(int i = 0; i < FONT_HEIGHT; ++i)
     {
         uint32_t line_buf[8] = {bg};
         uint8_t mask = 0x80;

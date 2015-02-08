@@ -22,14 +22,6 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     printf("GFX init\n");
     bool gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
 
-    puts("test123\n");
-    putchar('1');
-    putchar('2');
-    putchar('\n');
-    putchar('1');
-    putchar('2');
-    gfx_drawchar(0, 12, 'a', 0xffffff, 0);
-
     /* if graphical initialization fails, fall back to text mode */
     if(!gfx_status)
     {
@@ -56,14 +48,13 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     asm("sti");
 
-    //printf("Boot finished.\n");
+    printf("Boot finished.\n");
 
-    //printf("Testing RNG...\n");
+    printf("Testing RNG...\n");
     srand(*current_tick);
 
     if(gfx_status)
     {
-        /*
         for(int i=0;i<100000;++i)
         {
             int rx = rand() % *gfx_width;
@@ -76,10 +67,9 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             gfx_clear(0xff00ff);
         int end = *current_tick;
         printf("ticks for 1000 fills: %x\n", end-start);
-        */
     }
 
-    // printf("Testing keyboard LED's...\n");
+    printf("Testing keyboard LED's...\n");
 
     while(1)
     {
