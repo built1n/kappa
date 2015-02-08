@@ -116,8 +116,10 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endvline = *current_tick;
 
+        gfx_clear();
+
         int startrect = *current_tick;
-        for(int i=0;i<1000;++i)
+        for(int i=0;i<10000;++i)
         {
             int x = rand() % *gfx_width;
             int y = rand() % *gfx_height;
@@ -134,7 +136,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         printf("Ticks for 1,000,000 random chars:  %d\n", endtext-starttext);
         printf("Ticks for 1,000,000 random hlines: %d\n", endhline-starthline);
         printf("Ticks for 1,000,000 random vlines: %d\n", endvline-startvline);
-        printf("Ticks for 1,000 random rects:      %d\n", endrect-startrect);
+        printf("Ticks for 10,000 random rects:     %d\n", endrect-startrect);
         printf("Ticks per second:                  %d\n", HZ);
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
