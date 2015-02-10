@@ -239,9 +239,9 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
 {
     framebuffer = (uint8_t*)vbe_mode_info->physbase;
     fb_width = vbe_mode_info->Xres;
-    fb_height = vbe_mode_info->Yres - 100;
+    fb_height = vbe_mode_info->Yres;
     fb_bpp = vbe_mode_info->bpp / 8;
-    fb_stride = fb_bpp * fb_width;
+    fb_stride = vbe_mode_info->pitch;
     if(fb_bpp != 4)
     {
         printf("WARNING: BPP != 32, falling back to text mode...\n");
@@ -250,6 +250,12 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
     gfx_reset();
     set_putchar(gfx_putchar);
     set_puts(gfx_puts);
+
+    printf("stride: %d\ncalcstride: %d\n", fb_stride, fb_bpp * fb_width);
+    if(fb_stride != fb_bpp * fb_width)
+    {
+        printf("WARNING: no fill support for stride != BPP * width yet: fills might not work!\n");
+    }
 
     return true;
 }

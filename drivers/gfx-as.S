@@ -5,7 +5,6 @@
         .extern fb_bpp
         .extern _gfx_bgcol
         .extern framebuffer
-        # void gfx_clear(uint32_t color)
 gfx_clear:
         movl    framebuffer, %eax
         movzwl  fb_stride, %ecx
