@@ -46,14 +46,7 @@ uint32_t gfx_get_foreground(void)
 
 void gfx_drawpixel(int x, int y)
 {
-    if(0 <= y && y < fb_height && 0 <= x && x < fb_width)
-        ((uint32_t*)framebuffer)[y * fb_width + x] = _gfx_fgcol;
-    else
-    {
-        printf("x: %d, y: %d\n", x, y);
-        printf("max_x: %d\nmax_y: %d\n", fb_width, fb_height);
-        panic("OOB");
-    }
+    ((uint32_t*)framebuffer)[y * fb_width + x] = _gfx_fgcol;
 }
 
 /* implemented in assembly now */

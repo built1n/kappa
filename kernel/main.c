@@ -69,7 +69,6 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     printf("Running graphics benchmark...\n");
     srand(42);
 
-
     if(gfx_status)
     {
         const int width = *gfx_width;
@@ -99,6 +98,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         int endfill = *current_tick;
 
         gfx_clear();
+
         int starttext = *current_tick;
         for(int i=0;i<1000000;++i)
         {
@@ -108,6 +108,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             gfx_drawchar(rx, ry, rand()%127+1);
         }
         int endtext = *current_tick;
+
         gfx_clear();
 
         int starthline = *current_tick;
