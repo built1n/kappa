@@ -6,4 +6,4 @@ This kernel draws some code from [gamma](https://github.com/theunamedguy/gamma),
 
 # Graphics Benchmark Results
 
-<img src="docs/ss1.ppm">
+<img src="https://github.com/theunamedguy/kappa/blob/master/docs/ss1.ppm?raw=true">
