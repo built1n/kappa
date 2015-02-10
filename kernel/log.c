@@ -7,7 +7,7 @@
 
 void log_putchar(int ch)
 {
-    BOCHS_PUTCHAR(ch);
+    BOCHS_PUTCHAR((char)ch);
 }
 
 void log_puts(const char* str)

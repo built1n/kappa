@@ -5,35 +5,61 @@ char* itoa(int val, int base)
 {
     static char buf[32] = {0};
 
+    int neg = 0;
+
+    if(val < 0)
+    {
+        val = -val;
+        neg = 1;
+    }
+
     int i = 30;
 
-    for(; val && i ; --i, val /= base)
-
+    do
+    {
         buf[i] = "0123456789abcdef"[val % base];
+        --i;
+        val /= base;
+    }
+    while(val && i);
 
-    return &buf[i+1];
+    if(neg)
+    {
+        buf[i] = '-';
+    }
+
+    return &buf[i+(neg?0:1)];
 }
 
-static int rand_state = 42;
+static unsigned long rand_s1 = 18, rand_s2 = 5, rand_s3 = 43;
 
-/* some constants for the RNG */
-#define A 48271
-#define M 2147483647
-#define Q (M/A)
-#define R (M%A)
+#define M 1103515245UL
+#define A 12345UL
 
-int rand(void)
+/* this is a very fast tausworthe RNG */
+
+unsigned int rand(void)
 {
-    int tmp = A * (rand_state % Q) - R * (rand_state / Q);
-    if(tmp >= 0)
-        rand_state = tmp;
-    else
-        rand_state = tmp + M;
-    return rand_state;
+    rand_s1 = (((rand_s1&4294967294)<<12)^(((rand_s1<<13)^rand_s1)>>19));
+    rand_s2 = (((rand_s2&4294967288)<< 4)^(((rand_s2<< 2)^rand_s2)>>25));
+    rand_s3 = (((rand_s3&4294967280)<<17)^(((rand_s3<< 3)^rand_s3)>>11));
+    return (rand_s1 ^ rand_s2 ^ rand_s3);
 }
 
 void srand(unsigned int seed)
 {
-    /* prevent a zero seed */
-    rand_state = (!seed?42:seed);
+    if(!seed)
+        seed = 42;
+    rand_s1 = seed++;
+    rand_s2 = seed++;
+    rand_s3 = seed++;
+    /* "warm it up" */
+    rand();
+    rand();
+    rand();
+}
+
+int abs(int val)
+{
+    return (val<0?-val:val);
 }

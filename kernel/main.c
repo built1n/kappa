@@ -1,8 +1,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include "fpu.h"
 #include "gdt.h"
 #include "gfx.h"
+#include "gfx_font.h"
 #include "idt.h"
 #include "isr.h"
 #include "irq.h"
@@ -17,10 +19,11 @@
 
 void gpf(struct regs_t regs)
 {
+    gfx_reset();
     printf("General protection fault!\n");
     printf("EIP before fault: 0x%x\n", regs.eip);
     printf("Error code: 0x%x\n", regs.err_code);
-    panic("GPF");
+    panic("GPF!");
 }
 
 void main(struct multiboot_info_t *hdr, uint32_t magic)
@@ -63,21 +66,29 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("Boot finished.\n");
 
-    printf("Testing RNG...\n");
-    srand(*current_tick);
+    printf("Running graphics benchmark...\n");
+    srand(42);
+
 
     if(gfx_status)
     {
+        const int width = *gfx_width;
+        const int height = *gfx_height;
+
+        gfx_clear();
+
         int startpix = *current_tick;
         for(int i=0;i<1000000;++i)
         {
-            int rx = rand() % *gfx_width;
-            int ry = rand() % *gfx_height;
+            int rx = rand() % width;
+            int ry = rand() % height;
 
             gfx_set_foreground(rand() % 0x1000000);
             gfx_drawpixel(rx, ry);
         }
         int endpix = *current_tick;
+
+        gfx_clear();
 
         int startfill = *current_tick;
         for(int i=0;i<1000;++i)
@@ -87,14 +98,13 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endfill = *current_tick;
 
-        gfx_set_background(0);
-        gfx_set_foreground(0xFFFFFF);
         gfx_clear();
         int starttext = *current_tick;
         for(int i=0;i<1000000;++i)
         {
-            int rx = rand() % *gfx_width;
-            int ry = rand() % *gfx_height;
+            int rx = rand() % width;
+            int ry = rand() % height;
+            gfx_set_foreground(rand() % 0x1000000);
             gfx_drawchar(rx, ry, rand()%127+1);
         }
         int endtext = *current_tick;
@@ -103,7 +113,8 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         int starthline = *current_tick;
         for(int i=0;i<1000000;++i)
         {
-            gfx_hline(rand() % *gfx_width, rand() % *gfx_width, rand() % *gfx_height);
+            gfx_set_foreground(rand() % 0x1000000);
+            gfx_hline(rand() % width, rand() % width, rand() % height);
         }
         int endhline = *current_tick;
 
@@ -112,7 +123,8 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         int startvline = *current_tick;
         for(int i=0;i<1000000;++i)
         {
-            gfx_vline(rand() % *gfx_height, rand() % *gfx_height, rand() % *gfx_width);
+            gfx_set_foreground(rand() % 0x1000000);
+            gfx_vline(rand() % height, rand() % height, rand() % width);
         }
         int endvline = *current_tick;
 
@@ -121,13 +133,28 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         int startrect = *current_tick;
         for(int i=0;i<10000;++i)
         {
-            int x = rand() % *gfx_width;
-            int y = rand() % *gfx_height;
-            int w = rand() % (*gfx_width - x);
-            int h = rand() % (*gfx_height - y);
+            int x = rand() % width;
+            int y = rand() % height;
+            int w = rand() % (width - x);
+            int h = rand() % (height - y);
+            gfx_set_foreground(rand() % 0x1000000);
             gfx_fillrect(x, y, w, h);
         }
         int endrect = *current_tick;
+
+        gfx_clear();
+
+        int startline = *current_tick;
+        for(int i=0;i<1000000;++i)
+        {
+            int x1= rand() % width;
+            int x2= rand() % width;
+            int y1= rand() % height;
+            int y2= rand() % height;
+            gfx_set_foreground(rand() % 0x1000000);
+            gfx_drawline(x1, y1, x2, y2);
+        }
+        int endline = *current_tick;
 
         gfx_reset();
         printf("--- Graphics benchmark results ---\n");
@@ -137,6 +164,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         printf("Ticks for 1,000,000 random hlines: %d\n", endhline-starthline);
         printf("Ticks for 1,000,000 random vlines: %d\n", endvline-startvline);
         printf("Ticks for 10,000 random rects:     %d\n", endrect-startrect);
+        printf("Ticks for 1,000,000 random lines:  %d\n", endline-startline);
         printf("Ticks per second:                  %d\n", HZ);
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }

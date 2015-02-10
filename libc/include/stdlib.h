@@ -3,5 +3,8 @@
 /* NOT reentrant! */
 char* itoa(int val, int base);
 
-int rand(void);
+#define RAND_MAX ((1U << 31) - 1)
+
+unsigned int rand(void);
 void srand(unsigned int);
+int abs(int);

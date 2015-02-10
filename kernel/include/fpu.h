@@ -1,2 +1,2 @@
-void enable_fpu(void);
-void disable_fpu(void);
+void fpu_enable(void);
+void fpu_disable(void);

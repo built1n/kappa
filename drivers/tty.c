@@ -75,12 +75,12 @@ uint8_t tty_get_color(void)
     return term_col;
 }
 
-void tty_putchar_at(char ch, uint8_t col, int x, int y)
+void tty_putchar_at(int ch, uint8_t col, int x, int y)
 {
-    term_buf[y * VGA_WIDTH + x] = VGA_MAKE_ENTRY(ch, col);
+    term_buf[y * VGA_WIDTH + x] = VGA_MAKE_ENTRY((char)ch, col);
 }
 
-void tty_putchar(char ch)
+void tty_putchar(int ch)
 {
     if(ch != '\n')
     {

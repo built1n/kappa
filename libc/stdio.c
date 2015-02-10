@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static void (*putchar_ptr)(char) = log_putchar;
+static void (*putchar_ptr)(int) = log_putchar;
 static void (*puts_ptr)(const char*) = log_puts;
 
 int putchar(int ch)
 {
-    putchar_ptr((char)ch);
+    putchar_ptr(ch);
     return 0;
 }
 
@@ -18,7 +18,7 @@ int puts(const char* str)
     return 0;
 }
 
-void set_putchar(void (*func)(char))
+void set_putchar(void (*func)(int))
 {
     putchar_ptr = func;
 }

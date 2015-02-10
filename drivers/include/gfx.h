@@ -36,9 +36,13 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info);
 
 void gfx_drawpixel(int x, int y);
 
-void gfx_drawchar(int x, int y, char ch);
+/* transparent background */
+void gfx_drawchar(int x, int y, int ch);
 
-void gfx_putchar(char ch);
+/* fills the background with bgcolor */
+void gfx_drawchar_bg(int x, int y, int ch);
+
+void gfx_putchar(int ch);
 
 void gfx_puts(const char* str);
 
@@ -59,6 +63,8 @@ void gfx_hline(int x1, int x2, int y);
 void gfx_vline(int y1, int y2, int x);
 
 void gfx_fillrect(int x1, int y1, int w, int h);
+
+void gfx_drawline(int x1, int y1, int x2, int y2);
 
 extern const uint16_t *gfx_width, *gfx_height;
 

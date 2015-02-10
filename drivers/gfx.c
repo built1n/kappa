@@ -46,7 +46,14 @@ uint32_t gfx_get_foreground(void)
 
 void gfx_drawpixel(int x, int y)
 {
-    ((uint32_t*)framebuffer)[y * fb_width + x] = _gfx_fgcol;
+    if(0 <= y && y < fb_height && 0 <= x && x < fb_width)
+        ((uint32_t*)framebuffer)[y * fb_width + x] = _gfx_fgcol;
+    else
+    {
+        printf("x: %d, y: %d\n", x, y);
+        printf("max_x: %d\nmax_y: %d\n", fb_width, fb_height);
+        panic("OOB");
+    }
 }
 
 /* implemented in assembly now */
@@ -72,11 +79,13 @@ void gfx_reset(void)
     cursor_x = 0;
 }
 
-void gfx_drawchar(int x, int y, char c)
+void gfx_drawchar(int x, int y, int c)
 {
     uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_stride);
-    const uint32_t bg = _gfx_bgcol;
     const uint32_t fg = _gfx_fgcol;
+    const uint16_t stride = fb_stride;
+    if(c < 0 || c > 132)
+        return;
     for(int i = 0; i < FONT_HEIGHT; ++i)
     {
         uint8_t mask_table[8] = {128, 64, 32, 16, 8, 4, 2, 1};
@@ -85,11 +94,32 @@ void gfx_drawchar(int x, int y, char c)
             if(gfx_font[c][i] & mask_table[j])
                 ((uint32_t*)line_addr)[j] = fg;
         }
-        line_addr += fb_stride;
+        line_addr += stride;
     }
 }
 
-void gfx_putchar(char ch)
+void gfx_drawchar_bg(int x, int y, int c)
+{
+    uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_stride);
+    const uint32_t fg = _gfx_fgcol;
+    const uint16_t stride = fb_stride;
+    if(c < 0 || c > 132)
+        return;
+    for(int i = 0; i < FONT_HEIGHT; ++i)
+    {
+        uint8_t mask_table[8] = {128, 64, 32, 16, 8, 4, 2, 1};
+        for(int j = 0; j < 8; ++j)
+        {
+            if(gfx_font[c][i] & mask_table[j])
+                ((uint32_t*)line_addr)[j] = fg;
+            else
+                ((uint32_t*)line_addr)[j] = _gfx_bgcol;
+        }
+        line_addr += stride;
+    }
+}
+
+void gfx_putchar(int ch)
 {
     if(ch != '\n')
     {
@@ -126,7 +156,7 @@ void gfx_puts(const char* str)
     }
 }
 
-/* implemented in assembly */
+/* implemented in assembly now */
 #if 0
 void gfx_hline(int x1, int x2, int y)
 {
@@ -163,20 +193,48 @@ void gfx_vline(int y1, int y2, int x)
     uint8_t *dest = framebuffer + y1 * fb_stride + x * fb_bpp;
     uint8_t *stop = framebuffer + y2 * fb_stride + x * fb_bpp;
     const uint32_t col = _gfx_fgcol;
+    const uint16_t stride = fb_stride;
     while(dest < stop)
     {
         *(uint32_t*)dest = col;
-        dest += fb_stride;
+        dest += stride;
     }
 }
 #endif
 
-#define SWAP(x, y, tmp) (tmp=x;x=y;y=tmp;)
 void gfx_fillrect(int x, int y, int w, int h)
 {
     for(int i = 0; i < h; ++i)
     {
         gfx_hline(x, x + w, y + i);
+    }
+}
+
+void gfx_drawline(int x1, int y1, int x2, int y2)
+{
+    int dx =  abs(x2 - x1);
+    int sx =  x1 < x2 ? 1 : -1;
+    int dy = -abs(y2 - y1);
+    int sy =  y1 < y2 ? 1 : -1;
+    int err = dx + dy;
+    int e2; /* error value e_xy */
+
+    while(1)
+    {
+        gfx_drawpixel(x1, y1);
+        if (x1 == x2 && y1 == y2)
+            break;
+        e2 = err << 1;
+        if (e2 >= dy)
+        {
+            err += dy;
+            x1 += sx;
+        }
+        if (e2 <= dx)
+        {
+            err += dx;
+            y1 += sy;
+        }
     }
 }
 
