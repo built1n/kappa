@@ -23,6 +23,7 @@ static void key_handler(struct regs_t regs)
 {
     (void) regs;
     uint8_t scancode = inb(0x60);
+    (void) scancode;
     /* TODO: handle scancode */
     /*printf("key %x\n", scancode);*/
 }
@@ -42,6 +43,7 @@ static void keyboard_init(void)
 
 static void mouse_handler(struct regs_t regs)
 {
+    (void) regs;
     printf("mouse action!\n");
 }
 

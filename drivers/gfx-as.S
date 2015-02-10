@@ -1,25 +1,23 @@
         .global gfx_clear
         .extern fb_width
         .extern fb_height
+        .extern fb_stride
         .extern fb_bpp
         .extern _gfx_bgcol
         .extern framebuffer
         # void gfx_clear(uint32_t color)
 gfx_clear:
-        movzwl  fb_width, %ecx
-        movzwl  fb_height, %edx
         movl    framebuffer, %eax
-        pushl   %ebx
-        movl    _gfx_bgcol, %ebx
-        imull   %ecx, %edx
-        movzbl  fb_bpp, %ecx
+        movzwl  fb_stride, %ecx
+        movzwl  fb_height, %edx
         imull   %ecx, %edx
         addl    %eax, %edx
-        cmpl    %edx, %eax
-        jnb     .L2
+        pushl   %ebx
+        movzwl  fb_bpp, %ebx
+        movl    _gfx_bgcol, %ecx
 .L1:
-        movl    %ebx, (%eax)
-        addl    %ecx, %eax
+        movl    %ecx, (%eax)
+        addl    %ebx, %eax
         cmpl    %eax, %edx
         ja      .L1
 .L2:

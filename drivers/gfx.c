@@ -77,12 +77,14 @@ void gfx_drawchar(int x, int y, int c)
     uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_stride);
     const uint32_t fg = _gfx_fgcol;
     const uint16_t stride = fb_stride;
+    const uint8_t stop_y = MIN(FONT_HEIGHT, fb_height - y);
+    const uint8_t stop_x = MIN(FONT_WIDTH, fb_width - x);
     if(c < 0 || c > 132)
         return;
-    for(int i = 0; i < FONT_HEIGHT; ++i)
+    for(int i = 0; i < stop_y; ++i)
     {
         uint8_t mask_table[8] = {128, 64, 32, 16, 8, 4, 2, 1};
-        for(int j = 0; j < 8; ++j)
+        for(int j = 0; j < stop_x; ++j)
         {
             if(gfx_font[c][i] & mask_table[j])
                 ((uint32_t*)line_addr)[j] = fg;
@@ -96,12 +98,14 @@ void gfx_drawchar_bg(int x, int y, int c)
     uint8_t *line_addr = framebuffer + (x * fb_bpp) + (y * fb_stride);
     const uint32_t fg = _gfx_fgcol;
     const uint16_t stride = fb_stride;
+    const uint8_t stop_y = MIN(FONT_HEIGHT, fb_height - y);
+    const uint8_t stop_x = MIN(FONT_WIDTH, fb_width - x);
     if(c < 0 || c > 132)
         return;
-    for(int i = 0; i < FONT_HEIGHT; ++i)
+    for(int i = 0; i < stop_y; ++i)
     {
         uint8_t mask_table[8] = {128, 64, 32, 16, 8, 4, 2, 1};
-        for(int j = 0; j < 8; ++j)
+        for(int j = 0; j < stop_x; ++j)
         {
             if(gfx_font[c][i] & mask_table[j])
                 ((uint32_t*)line_addr)[j] = fg;
@@ -235,7 +239,7 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
 {
     framebuffer = (uint8_t*)vbe_mode_info->physbase;
     fb_width = vbe_mode_info->Xres;
-    fb_height = vbe_mode_info->Yres;
+    fb_height = vbe_mode_info->Yres - 100;
     fb_bpp = vbe_mode_info->bpp / 8;
     fb_stride = fb_bpp * fb_width;
     if(fb_bpp != 4)
