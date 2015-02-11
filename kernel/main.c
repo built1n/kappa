@@ -171,17 +171,48 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
 
-    printf("Testing keyboard LED's...\n");
+    printf("Testing keyboard LED's...");
+
+    int n = 3;
+    int s = -1;
 
     while(1)
     {
         ps2_set_leds(PS2_NUM_LOCK);
         timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
         ps2_set_leds(PS2_CAPS_LOCK);
         timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
         ps2_set_leds(PS2_SCROLL_LOCK);
         timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
         ps2_set_leds(PS2_CAPS_LOCK);
         timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
     }
 }

@@ -24,6 +24,8 @@ const uint16_t *gfx_height = &fb_height;
 static int cursor_x, cursor_y;
 uint32_t _gfx_fgcol, _gfx_bgcol;
 
+void (*gfx_clear)(void);
+
 void gfx_set_background(uint32_t col)
 {
     _gfx_bgcol = col;
@@ -118,7 +120,7 @@ void gfx_drawchar_bg(int x, int y, int c)
 
 void gfx_putchar(int ch)
 {
-    if(ch != '\n')
+    if(ch != '\n' && ch != '\b')
     {
         gfx_drawchar(cursor_x, cursor_y, ch);
         cursor_x += FONT_WIDTH;
@@ -133,7 +135,7 @@ void gfx_putchar(int ch)
             }
         }
     }
-    else
+    else if(ch == '\n')
     {
         cursor_x = 0;
         cursor_y += FONT_HEIGHT;
@@ -142,6 +144,21 @@ void gfx_putchar(int ch)
             gfx_clear();
             cursor_y = 0;
         }
+    }
+    else if(ch == '\b')
+    {
+        int temp_x = cursor_x - FONT_WIDTH;
+        if(temp_x < 0)
+        {
+            cursor_x = 0;
+            int temp_y = cursor_y - FONT_HEIGHT;
+            cursor_y = (temp_y < 0) ? 0 : temp_y;
+        }
+        else
+        {
+            cursor_x = temp_x;
+        }
+        gfx_drawchar_bg(cursor_x, cursor_y, ' ');
     }
 }
 
@@ -247,6 +264,11 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
         printf("WARNING: BPP != 32, falling back to text mode...\n");
         return false;
     }
+
+    void gfx_clear_packed(void);
+
+    gfx_clear = &gfx_clear_packed;
+
     gfx_reset();
     set_putchar(gfx_putchar);
     set_puts(gfx_puts);

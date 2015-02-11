@@ -46,7 +46,8 @@ void gfx_putchar(int ch);
 
 void gfx_puts(const char* str);
 
-void gfx_clear(void);
+/* this function can be different from resolution to resolution */
+extern void (*gfx_clear)(void);
 
 void gfx_reset(void);
 

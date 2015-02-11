@@ -1,11 +1,12 @@
-        .global gfx_clear
         .extern fb_width
         .extern fb_height
         .extern fb_stride
         .extern fb_bpp
         .extern _gfx_bgcol
         .extern framebuffer
-gfx_clear:
+
+        .global gfx_clear_packed
+gfx_clear_packed:
         movl    framebuffer, %eax
         movzwl  fb_stride, %ecx
         movzwl  fb_height, %edx
