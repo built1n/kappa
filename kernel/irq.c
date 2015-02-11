@@ -5,6 +5,7 @@
 #include "io.h"
 #include "irq.h"
 #include "isr.h"
+#include "panic.h"
 
 /* in isr.c */
 extern void *int_callbacks[256];
@@ -44,11 +45,11 @@ void irq_init(void)
     idt_set_gate(47, (uint32_t)_irq15, 0x08, 0x8E);
 }
 
-void irq_handler(struct regs_t regs)
+void irq_handler(struct regs_t *regs)
 {
-    void (*handler)(struct regs_t r);
+    void (*handler)(struct regs_t *r);
 
-    handler = int_callbacks[regs.int_no];
+    handler = int_callbacks[regs->int_no];
 
     if(handler)
     {
@@ -56,13 +57,13 @@ void irq_handler(struct regs_t regs)
     }
     else
     {
-        printf("WARNING: Unhandled IRQ: 0x%x!\n", regs.int_no);
+        printf("WARNING: Unhandled IRQ: 0x%x!\n", regs->int_no);
     }
 
     /* If the IDT entry that was invoked was greater than 40
      *  (meaning IRQ8 - 15), then we need to send an EOI to
      *  the slave controller */
-    if (regs.int_no >= 40)
+    if (regs->int_no >= 40)
     {
         outb(0xA0, 0x20);
     }

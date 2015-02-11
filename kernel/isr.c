@@ -4,22 +4,22 @@
 #include "idt.h"
 #include "panic.h"
 
-void (*int_callbacks[256])(struct regs_t) = { NULL };
+void (*int_callbacks[256])(struct regs_t*) = { NULL };
 
-void set_interrupt_handler(uint8_t n, void (*callback)(struct regs_t))
+void set_interrupt_handler(uint8_t n, void (*callback)(struct regs_t*))
 {
     int_callbacks[n] = callback;
 }
 
-void isr_handler(struct regs_t regs)
+void isr_handler(struct regs_t *regs)
 {
-    if(int_callbacks[regs.int_no])
+    if(int_callbacks[regs->int_no])
     {
-        int_callbacks[regs.int_no](regs);
+        int_callbacks[regs->int_no](regs);
     }
     else
     {
-        printf("WARNING: unhandled ISR 0x%x!\n", regs.int_no);
+        printf("WARNING: unhandled ISR 0x%x!\n", regs->int_no);
     }
 }
 

@@ -41,11 +41,11 @@ void isr_init(void);
 struct regs_t {
     uint32_t gs, fs, es, ds; /* pushed the segs last */
     uint32_t edi, esi, ebp, esp, ebx, edx, ecx, eax;  /* pushed by 'pusha' */
-    uint32_t err_code; /* exceptions push this */
     uint32_t int_no; /* interrupt stubs do this */
+    uint32_t err_code; /* exceptions push this */
     uint32_t eip, cs, eflags, useresp, ss;   /* pushed by the processor automatically */
 } __attribute__((packed));
 
 #define IRQ(x) (32+x)
 
-void set_interrupt_handler(uint8_t interrupt, void (*func)(struct regs_t));
+void set_interrupt_handler(uint8_t interrupt, void (*func)(struct regs_t*));

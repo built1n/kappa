@@ -12,7 +12,7 @@ irq_stub:
         mov %ax, %es
         mov %ax, %fs
         mov %ax, %gs
-        mov %esp, %eax
+        mov %esp, %eax  # push the stack
         push %eax
         mov $irq_handler, %eax
         call *%eax

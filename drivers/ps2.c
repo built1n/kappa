@@ -19,7 +19,7 @@ void ps2_set_leds(uint8_t status)
     outb(0x60, status);
 }
 
-static void key_handler(struct regs_t regs)
+static void key_handler(struct regs_t *regs)
 {
     (void) regs;
     uint8_t scancode = inb(0x60);
@@ -41,7 +41,7 @@ static void keyboard_init(void)
     ps2_set_scancode_set(1);
 }
 
-static void mouse_handler(struct regs_t regs)
+static void mouse_handler(struct regs_t *regs)
 {
     (void) regs;
     printf("mouse action!\n");

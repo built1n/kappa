@@ -17,12 +17,12 @@
 #include "timer.h"
 #include "tty.h"
 
-void gpf(struct regs_t regs)
+void gpf(struct regs_t *regs)
 {
     gfx_reset();
     printf("General protection fault!\n");
-    printf("EIP before fault: 0x%x\n", regs.eip);
-    printf("Error code: 0x%x\n", regs.err_code);
+    printf("EIP before fault: 0x%x\n", regs->eip);
+    printf("Error code: 0x%x\n", regs->err_code);
     panic("GPF!");
 }
 
@@ -74,7 +74,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         const int width = *gfx_width;
         const int height = *gfx_height;
 
-        gfx_clear();
+        gfx_reset();
 
         int startpix = *current_tick;
         for(int i=0;i<1000000;++i)
@@ -87,7 +87,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endpix = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int startfill = *current_tick;
         for(int i=0;i<1000;++i)
@@ -97,7 +97,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endfill = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int starttext = *current_tick;
         for(int i=0;i<1000000;++i)
@@ -109,7 +109,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endtext = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int starthline = *current_tick;
         for(int i=0;i<1000000;++i)
@@ -119,7 +119,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endhline = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int startvline = *current_tick;
         for(int i=0;i<1000000;++i)
@@ -129,7 +129,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endvline = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int startrect = *current_tick;
         for(int i=0;i<10000;++i)
@@ -143,7 +143,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         }
         int endrect = *current_tick;
 
-        gfx_clear();
+        gfx_reset();
 
         int startline = *current_tick;
         for(int i=0;i<1000000;++i)
@@ -158,6 +158,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         int endline = *current_tick;
 
         gfx_reset();
+
         printf("--- Graphics benchmark results ---\n");
         printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
         printf("Ticks for 1,000 random fills:      %d\n", endfill-startfill);

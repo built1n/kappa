@@ -15,6 +15,4 @@ extern void _irq13(void);
 extern void _irq14(void);
 extern void _irq15(void);
 
-struct regs_t;
-
 void irq_init(void);

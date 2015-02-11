@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdio.h>
 #include "io.h"
 #include "isr.h"
 #include "timer.h"
@@ -7,7 +8,7 @@ volatile uint64_t current_tick_data = 0;
 
 volatile const uint64_t *current_tick = &current_tick_data;
 
-static void timer_callback(struct regs_t regs)
+static void timer_callback(struct regs_t *regs)
 {
     (void) regs;
     ++current_tick_data;
@@ -15,6 +16,7 @@ static void timer_callback(struct regs_t regs)
 
 void timer_init(uint32_t freq)
 {
+    printf("Timer init");
     set_interrupt_handler(IRQ(0), timer_callback);
 
     current_tick_data = 0;
