@@ -74,8 +74,6 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     printf("Running graphics benchmark...\n");
     srand(42);
 
-    while(1);
-
     if(gfx_status)
     {
         const int width = *gfx_width;

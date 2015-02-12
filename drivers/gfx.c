@@ -291,7 +291,7 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
     {
         gfx_clear = &gfx_clear_unpacked;
         gfx_reset();
-        printf("Pitch != stride * BPP, fill performance might be suboptimal!\n");
+        printf("WARNING: Internal framebuffer padding detected, support is experimental.\n");
     }
     else
     {
