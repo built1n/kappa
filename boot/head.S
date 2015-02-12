@@ -24,19 +24,18 @@ multiboot_header:
 .section .stack
 stack_bottom:                   # Stack grows up in addresses, so bottom is
                                 # lower in memory than the top
-        .skip 16384             # 16KB stack
+        .skip 32768             # 32KB stack
 stack_top:
 
 .section .text
         .global _start
-        .type _start, @function
 _start:
         cli
         movl $stack_top, %esp
         push %eax # multiboot magic
         push %ebx # multiboot header
         call main
+.Lhang:                   # Idle
         cli
         hlt
-.Lhang:                   # Idle
         jmp .Lhang

@@ -24,7 +24,9 @@ const uint16_t *gfx_height = &fb_height;
 static int cursor_x, cursor_y;
 uint32_t _gfx_fgcol, _gfx_bgcol;
 
-void (*gfx_clear)(void);
+extern void gfx_clear_packed(void);
+
+void (*gfx_clear)(void) = &gfx_clear_packed;
 
 void gfx_set_background(uint32_t col)
 {
@@ -64,6 +66,23 @@ void gfx_clear(uint32_t col)
     }
 }
 */
+
+void gfx_clear_unpacked(void)
+{
+    uint8_t *fb = framebuffer;
+    const uint32_t bg = _gfx_bgcol;
+
+    const uint16_t padding = fb_stride - (fb_bpp * fb_width);
+
+    for(int y = 0; y < fb_height; ++y)
+    {
+        for(int x = 0; x < fb_width; ++x)
+        {
+            *(uint32_t*)fb++ = bg;
+        }
+        fb += padding;
+    }
+}
 
 void gfx_reset(void)
 {
@@ -265,19 +284,19 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
         return false;
     }
 
-    void gfx_clear_packed(void);
-
-    gfx_clear = &gfx_clear_packed;
+    if(fb_stride != fb_bpp * fb_width)
+    {
+        printf("Pitch != stride * BPP, fill performance might be suboptimal!\n");
+        gfx_clear = &gfx_clear_unpacked;
+    }
+    else
+    {
+        gfx_clear = &gfx_clear_packed;
+    }
 
     gfx_reset();
     set_putchar(gfx_putchar);
     set_puts(gfx_puts);
-
-    printf("stride: %d\ncalcstride: %d\n", fb_stride, fb_bpp * fb_width);
-    if(fb_stride != fb_bpp * fb_width)
-    {
-        printf("WARNING: no fill support for stride != BPP * width yet: fills might not work!\n");
-    }
 
     return true;
 }

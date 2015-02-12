@@ -16,6 +16,7 @@
 #include "fpu.h"
 #include "timer.h"
 #include "tty.h"
+#include "version.h"
 
 void gpf(struct regs_t *regs)
 {
@@ -29,7 +30,9 @@ void gpf(struct regs_t *regs)
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
+
     asm("movq %xmm0, %xmm0");
+
     /* this should go to port e9, which is the Bochs debug port */
     printf("Testing early I/O\n");
 
@@ -66,8 +69,12 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("Boot finished.\n");
 
+    printf("Kernel version %s: \"%s\"\n", KAPPA_KERNEL_VERSION, KAPPA_KERNEL_CODENAME);
+
     printf("Running graphics benchmark...\n");
     srand(42);
+
+    while(1);
 
     if(gfx_status)
     {
@@ -171,10 +178,10 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
     }
 
-    printf("Testing keyboard LED's...");
+    printf("Testing keyboard LED's");
 
-    int n = 3;
-    int s = -1;
+    int n = 0;
+    int s = 1;
 
     while(1)
     {

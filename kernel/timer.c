@@ -16,7 +16,6 @@ static void timer_callback(struct regs_t *regs)
 
 void timer_init(uint32_t freq)
 {
-    printf("Timer init");
     set_interrupt_handler(IRQ(0), timer_callback);
 
     current_tick_data = 0;
