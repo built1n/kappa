@@ -34,7 +34,7 @@ struct vbe_info_t;
 
 bool gfx_init(struct vbe_info_t *vbe_mode_info);
 
-void gfx_drawpixel(int x, int y);
+extern void (*gfx_drawpixel)(int x, int y);
 
 /* transparent background */
 void gfx_drawchar(int x, int y, int ch);

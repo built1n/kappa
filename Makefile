@@ -16,7 +16,7 @@ ISODIR = isodir
 
 all: kappa.bin
 
-test: iso
+test: kappa.iso
 	@echo "EMULATOR kappa.iso"
 	@$(QEMU) kappa.iso
 

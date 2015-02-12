@@ -25,6 +25,7 @@ static int cursor_x, cursor_y;
 uint32_t _gfx_fgcol, _gfx_bgcol;
 
 void (*gfx_clear)(void);
+void (*gfx_drawpixel)(int x, int y);
 
 void gfx_set_background(uint32_t col)
 {
@@ -46,11 +47,11 @@ uint32_t gfx_get_foreground(void)
     return _gfx_fgcol;
 }
 
-void gfx_drawpixel(int x, int y)
+/* assembly */
+void gfx_drawpixel_test(int x, int y)
 {
-    ((uint32_t*)framebuffer)[y * fb_width + x] = _gfx_fgcol;
+    ((uint32_t*)framebuffer)[y * fb_stride + x] = _gfx_fgcol;
 }
-
 /* implemented in assembly now */
 /*
 void gfx_clear(uint32_t col)
@@ -280,6 +281,11 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
     {
         printf("WARNING: BPP != 32, falling back to text mode...\n");
         return false;
+    }
+    else
+    {
+        extern void gfx_drawpixel_32bpp(int, int);
+        gfx_drawpixel = &gfx_drawpixel_32bpp;
     }
 
     set_putchar(gfx_putchar);

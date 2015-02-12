@@ -2,6 +2,7 @@
         .extern fb_height
         .extern fb_stride
         .extern fb_bpp
+        .extern _gfx_fgcol
         .extern _gfx_bgcol
         .extern framebuffer
 
@@ -84,4 +85,14 @@ gfx_vline:
 .L8:
         popl    %ebx
         popl    %esi
+        ret
+
+        .global gfx_drawpixel_32bpp
+gfx_drawpixel_32bpp:
+        movzwl  fb_stride, %eax
+        movl    framebuffer, %edx
+        imull   8(%esp), %eax
+        movl    _gfx_fgcol, %ecx
+        addl    4(%esp), %eax
+        movl    %ecx, (%edx,%eax,4)
         ret
