@@ -24,9 +24,7 @@ const uint16_t *gfx_height = &fb_height;
 static int cursor_x, cursor_y;
 uint32_t _gfx_fgcol, _gfx_bgcol;
 
-extern void gfx_clear_packed(void);
-
-void (*gfx_clear)(void) = &gfx_clear_packed;
+void (*gfx_clear)(void);
 
 void gfx_set_background(uint32_t col)
 {
@@ -284,19 +282,24 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
         return false;
     }
 
+    set_putchar(gfx_putchar);
+    set_puts(gfx_puts);
+
+    /* A bit of fragile code here... don't call gfx_reset() before setting gfx_clear! */
+
     if(fb_stride != fb_bpp * fb_width)
     {
-        printf("Pitch != stride * BPP, fill performance might be suboptimal!\n");
         gfx_clear = &gfx_clear_unpacked;
+        gfx_reset();
+        printf("Pitch != stride * BPP, fill performance might be suboptimal!\n");
     }
     else
     {
+        /* assembly */
+        extern void gfx_clear_packed(void);
         gfx_clear = &gfx_clear_packed;
+        gfx_reset();
     }
-
-    gfx_reset();
-    set_putchar(gfx_putchar);
-    set_puts(gfx_puts);
 
     return true;
 }
