@@ -43,6 +43,7 @@ void irq_init(void)
     idt_set_gate(45, (uint32_t)_irq13, 0x08, 0x8E);
     idt_set_gate(46, (uint32_t)_irq14, 0x08, 0x8E);
     idt_set_gate(47, (uint32_t)_irq15, 0x08, 0x8E);
+    idt_set_gate(128,(uint32_t)_int0x80, 0x08, 0x8E);
 }
 
 void irq_handler(struct regs_t *regs)
@@ -57,7 +58,6 @@ void irq_handler(struct regs_t *regs)
     }
     else
     {
-        printf("WARNING: Unhandled IRQ: 0x%x!\n", regs->int_no);
     }
 
     /* If the IDT entry that was invoked was greater than 40

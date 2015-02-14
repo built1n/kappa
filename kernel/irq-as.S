@@ -41,6 +41,7 @@ irq_stub:
         .global _irq13
         .global _irq14
         .global _irq15
+        .global _int0x80
 
 _irq0:
         cli
@@ -136,4 +137,10 @@ _irq15:
         cli
         pushl $0
         pushl $47
+        jmp irq_stub
+
+_int0x80:
+        cli
+        pushl $0
+        pushl $0x80
         jmp irq_stub

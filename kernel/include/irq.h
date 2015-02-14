@@ -14,5 +14,6 @@ extern void _irq12(void);
 extern void _irq13(void);
 extern void _irq14(void);
 extern void _irq15(void);
+extern void _int0x80(void);
 
 void irq_init(void);

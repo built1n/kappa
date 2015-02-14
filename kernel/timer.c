@@ -34,5 +34,8 @@ void timer_delay(uint64_t ticks)
 {
     uint64_t end = *current_tick + ticks;
     while(*current_tick <= end)
+    {
+        asm("sti");
         asm("hlt");
+    }
 }

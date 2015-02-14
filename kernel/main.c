@@ -27,11 +27,22 @@ void gpf(struct regs_t *regs)
     panic("GPF!");
 }
 
+void int80(struct regs_t *regs)
+{
+    switch(regs->eax)
+    {
+    case 0:
+        panic((const char*)regs->ebx);
+        break;
+    case 1:
+        puts((const char*)regs->ebx);
+        break;
+    }
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
-
-    asm("movq %xmm0, %xmm0");
 
     /* this should go to port e9, which is the Bochs debug port */
     printf("Testing early I/O\n");
@@ -64,6 +75,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     ps2_init();
 
     set_interrupt_handler(0xd, gpf);
+    set_interrupt_handler(0x80, int80);
 
     asm("sti");
 
@@ -71,8 +83,17 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("Kernel version %s: \"%s\"\n", KAPPA_KERNEL_VERSION, KAPPA_KERNEL_CODENAME);
 
+    //printf("Starting linked-in application XRacer...\n");
     printf("Running graphics benchmark...\n");
     srand(42);
+
+    gfx_drawcircle(100, 100, 100);
+
+    gfx_fillcircle(50, 30, 20);
+
+    while(1);
+
+    //xracer_main();
 
     if(gfx_status)
     {

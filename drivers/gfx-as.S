@@ -89,7 +89,7 @@ gfx_vline:
 
         .global gfx_drawpixel_32bpp
 gfx_drawpixel_32bpp:
-        movzwl  fb_stride, %eax
+        movzwl  fb_stride32, %eax
         movl    framebuffer, %edx
         imull   8(%esp), %eax
         movl    _gfx_fgcol, %ecx

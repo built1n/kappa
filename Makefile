@@ -20,11 +20,11 @@ test: kappa.iso
 	@echo "EMULATOR kappa.iso"
 	@$(QEMU) kappa.iso
 
-test-bochs: iso
+test-bochs: kappa.iso
 	@echo "BOCHS bochs.cfg"
 	@$(BOCHS) -f bochs.cfg -q
 
-iso: kappa.bin
+kappa.iso: kappa.bin
 	@echo "Building ISO under $(ISODIR)/..."
 	@mkdir -p $(ISODIR)
 	@mkdir -p $(ISODIR)/boot

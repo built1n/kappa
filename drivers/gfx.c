@@ -16,6 +16,8 @@ uint16_t fb_height;
 /* this is BYTES per pixel */
 uint8_t  fb_bpp;
 uint16_t fb_stride;
+/* fb_stride / 4 */
+uint16_t fb_stride32;
 const uint8_t *gfx_bpp = &fb_bpp;
 
 const uint16_t *gfx_width = &fb_width;
@@ -48,9 +50,13 @@ uint32_t gfx_get_foreground(void)
 }
 
 /* assembly */
-void gfx_drawpixel_test(int x, int y)
+void gfx_drawpixel_32bpp_checked(int x, int y)
 {
-    ((uint32_t*)framebuffer)[y * fb_stride + x] = _gfx_fgcol;
+    if(0 <= x && x < fb_width &&
+       0 <= y && y < fb_height)
+        ((uint32_t*)framebuffer)[y * fb_stride32 + x] = _gfx_fgcol;
+    else
+        panic("pixel OOB!\n");
 }
 /* implemented in assembly now */
 /*
@@ -270,6 +276,59 @@ void gfx_drawline(int x1, int y1, int x2, int y2)
     }
 }
 
+void gfx_drawcircle(int cx, int cy, int r)
+{
+    int d = 3 - (r * 2);
+    int x = 0;
+    int y = r;
+    while(x <= y)
+    {
+        gfx_drawpixel(cx + x, cy + y);
+        gfx_drawpixel(cx - x, cy + y);
+        gfx_drawpixel(cx + x, cy - y);
+        gfx_drawpixel(cx - x, cy - y);
+        gfx_drawpixel(cx + y, cy + x);
+        gfx_drawpixel(cx - y, cy + x);
+        gfx_drawpixel(cx + y, cy - x);
+        gfx_drawpixel(cx - y, cy - x);
+        if(d < 0)
+        {
+            d += (x * 4) + 6;
+        }
+        else
+        {
+            d += ((x - y) * 4) + 10;
+            --y;
+        }
+        ++x;
+    }
+}
+
+void gfx_fillcircle(int cx, int cy, int r)
+{
+    int d = 3 - (r * 2);
+    int x = 0;
+    int y = r;
+    while(x <= y)
+    {
+        gfx_hline(cx - x, cx + x, cy + y);
+        gfx_hline(cx - x, cx + x, cy - y);
+        gfx_hline(cx - y, cx + y, cy + x);
+        gfx_hline(cx - y, cx + y, cy - x);
+        if(d < 0)
+        {
+            d += (x * 4) + 6;
+        }
+        else
+        {
+            d += ((x - y) * 4) + 10;
+            --y;
+        }
+        ++x;
+    }
+}
+
+
 bool gfx_init(struct vbe_info_t *vbe_mode_info)
 {
     framebuffer = (uint8_t*)vbe_mode_info->physbase;
@@ -277,6 +336,7 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
     fb_height = vbe_mode_info->Yres;
     fb_bpp = vbe_mode_info->bpp / 8;
     fb_stride = vbe_mode_info->pitch;
+    fb_stride32 = fb_stride / 4;
     if(fb_bpp != 4)
     {
         printf("WARNING: BPP != 32, falling back to text mode...\n");
@@ -284,8 +344,8 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
     }
     else
     {
-        extern void gfx_drawpixel_32bpp(int, int);
-        gfx_drawpixel = &gfx_drawpixel_32bpp;
+        //extern void gfx_drawpixel_32bpp(int, int);
+        gfx_drawpixel = &gfx_drawpixel_32bpp_checked;
     }
 
     set_putchar(gfx_putchar);

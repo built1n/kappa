@@ -1,3 +1,6 @@
+#ifndef _GFX_H_
+#define _GFX_H_
+
 #include <stdbool.h>
 #include <stdint.h>
 
@@ -67,7 +70,14 @@ void gfx_fillrect(int x1, int y1, int w, int h);
 
 void gfx_drawline(int x1, int y1, int x2, int y2);
 
+/* these circle algorithms are very fast */
+void gfx_drawcircle(int cx, int cy, int rad);
+
+void gfx_fillcircle(int cx, int cy, int rad);
+
 extern const uint16_t *gfx_width, *gfx_height;
 
 /* this is _BYTES_ per pixel, NOT BITS per pixel! */
 extern const uint8_t *gfx_bpp;
+
+#endif

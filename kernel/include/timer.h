@@ -9,4 +9,5 @@ struct regs_t;
 
 void timer_init(uint32_t freq);
 
+/* NOTE: enables interrupts by default */
 void timer_delay(uint64_t ticks);
