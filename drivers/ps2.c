@@ -4,6 +4,7 @@
 #include "io.h"
 #include "isr.h"
 #include "ps2.h"
+#include "ps2_keymaps.h"
 
 static void ps2_wait(void)
 {
@@ -18,6 +19,8 @@ void ps2_set_leds(uint8_t status)
     outb(0x60, 0xED);
     outb(0x60, status);
 }
+
+static uint8_t keyboard_state[16];
 
 static void key_handler(struct regs_t *regs)
 {

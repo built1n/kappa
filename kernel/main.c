@@ -40,6 +40,12 @@ void int80(struct regs_t *regs)
     }
 }
 
+void div0(struct regs_t *regs)
+{
+    (void) regs;
+    panic("Divide by zero!\n");
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
@@ -74,6 +80,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     timer_init(HZ);
     ps2_init();
 
+    set_interrupt_handler(0, div0);
     set_interrupt_handler(0xd, gpf);
     set_interrupt_handler(0x80, int80);
 
@@ -83,17 +90,28 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("Kernel version %s: \"%s\"\n", KAPPA_KERNEL_VERSION, KAPPA_KERNEL_CODENAME);
 
-    //printf("Starting linked-in application XRacer...\n");
-    printf("Running graphics benchmark...\n");
+    printf("Starting linked-in application XRacer...\n");
+    //printf("Running graphics benchmark...\n");
     srand(42);
 
-    gfx_drawcircle(100, 100, 100);
+    gfx_reset();
 
-    gfx_fillcircle(50, 30, 20);
+    enum plugin_status;
+    struct plugin_api;
+    extern enum plugin_status xracer_main(const struct plugin_api*);
+    extern void plugin_load(enum plugin_status (*func)(const struct plugin_api*));
 
+    plugin_load(xracer_main);
+
+    gfx_filltriangle(100, 100, 100, 100, 100, 100);
+
+    for(int i=0;i<200;)
+    {
+        gfx_putsxy_bg(i, 0, " ");
+        gfx_drawchar_bg(++i, 0, 131);
+        timer_delay(1);
+    }
     while(1);
-
-    //xracer_main();
 
     if(gfx_status)
     {
@@ -180,6 +198,9 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
             int y2= rand() % height;
             gfx_set_foreground(rand() % 0x1000000);
             gfx_drawline(x1, y1, x2, y2);
+            char buf[32];
+            snprintf(buf, 32, "Line %d", i);
+            gfx_putsxy(0, 0, buf);
         }
         int endline = *current_tick;
 

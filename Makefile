@@ -35,7 +35,7 @@ kappa.iso: kappa.bin
 	@grub-mkrescue -o kappa.iso $(ISODIR) 2> /dev/null
 
 kappa.bin: $(OBJ) $(SOURCES) Makefile
-	@$(LD) -T kernel/linker.ld -o kappa.bin -melf_i386 $(OBJ)
+	@$(LD) -T kernel/linker.ld -o kappa.bin -melf_i386 $(OBJ) -L /usr/lib32 -lgcc_s -static
 	@echo "LD $@"
 
 drivers/gfx.o: drivers/gfx.c Makefile

@@ -25,8 +25,10 @@ gfx_clear_packed:
         popl    %ebx
         ret
 
-        .global gfx_hline
-gfx_hline:
+        .global gfx_hline_fast
+
+gfx_hline_fast:
+        int     $0x80
         pushl   %ebx
         movl    8(%esp), %eax
         movl    12(%esp), %ecx
@@ -54,8 +56,9 @@ gfx_hline:
         popl    %ebx
         ret
 
-        .global gfx_vline
-gfx_vline:
+        .global gfx_vline_fast
+
+gfx_vline_fast:
         pushl   %esi
         pushl   %ebx
         movl    12(%esp), %eax

@@ -62,9 +62,9 @@ void gfx_set_background(uint32_t);
 
 uint32_t gfx_get_background(void);
 
-void gfx_hline(int x1, int x2, int y);
+void (*gfx_hline)(int x1, int x2, int y);
 
-void gfx_vline(int y1, int y2, int x);
+void (*gfx_vline)(int y1, int y2, int x);
 
 void gfx_fillrect(int x1, int y1, int w, int h);
 
@@ -75,9 +75,31 @@ void gfx_drawcircle(int cx, int cy, int rad);
 
 void gfx_fillcircle(int cx, int cy, int rad);
 
+void gfx_filltriangle(int x1, int y1, int x2, int y2, int x3, int y3);
+
 extern const uint16_t *gfx_width, *gfx_height;
 
 /* this is _BYTES_ per pixel, NOT BITS per pixel! */
 extern const uint8_t *gfx_bpp;
 
+struct bitmap_t {
+    unsigned int w, h;
+    unsigned int bpp;
+    uint8_t *data;
+};
+
+void gfx_bitmap(int x, int y, const struct bitmap_t*);
+
+void gfx_drawrect(int x, int y, int w, int h);
+
+void gfx_set_doublebuffer(bool);
+
+bool gfx_get_doublebuffer(void);
+
+/* don't call this wo/ double buffering! */
+void gfx_update(void);
+
+void gfx_putsxy(int, int, const char*);
+
+void gfx_putsxy_bg(int, int, const char*);
 #endif

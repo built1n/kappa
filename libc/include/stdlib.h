@@ -1,6 +1,8 @@
 #ifndef _STDLIB_H_
 #define _STDLIB_H_
 
+#include <stddef.h>
+
 /* this is by no means standards-compliant... but who cares? :P */
 
 /* NOT reentrant! */
@@ -14,5 +16,7 @@ char* itoa(int val, int base);
 unsigned int rand(void);
 void srand(unsigned int);
 int abs(int);
+void *malloc(size_t);
+int snprintf(char*, int, const char*, ...);
 
 #endif
