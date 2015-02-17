@@ -47,7 +47,7 @@
 #define CURVES true
 
 /* this specifies the length of each road and border color in segments */
-#define RUMBLE_LENGTH 3
+#define RUMBLE_LENGTH 6
 #define LANES 3
 
 /* camera parameters */

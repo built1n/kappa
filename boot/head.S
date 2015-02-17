@@ -24,7 +24,7 @@ multiboot_header:
 .section .stack
 stack_bottom:                   # Stack grows up in addresses, so bottom is
                                 # lower in memory than the top
-        .skip 32768             # 32KB stack
+        .skip 65536             # 32KB stack
 stack_top:
 
 .section .text

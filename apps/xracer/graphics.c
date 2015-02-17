@@ -41,6 +41,7 @@ static inline void fill_poly(int x1, int y1,
                              unsigned color)
 {
     SET_FOREGROUND(color);
+
     FILL_TRI(x1, y1, x2, y2, x3, y3);
     FILL_TRI(x1, y1, x3, y3, x4, y4);
 }
