@@ -33,6 +33,7 @@ struct point_3d {
 struct camera_t {
     struct point_3d pos;
     int depth;
+    int draw_dist;
 };
 
 struct point_2d {

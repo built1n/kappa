@@ -51,6 +51,7 @@ struct plugin_api {
     void (*lcd_putsxy)(int x, int y, const char*);
 
     int  (*button_get)(void);
+    int  (*modifier_get)(void);
 };
 
 /* defined by the plugin */

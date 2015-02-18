@@ -228,7 +228,7 @@ void render(struct camera_t *camera, struct road_segment *road, unsigned int roa
     /* interpolate so as to prevent jumpy camera movement on hills */
     camera->pos.y = INTERPOLATE(base->p1_y, base->p2_y, base_percent) + camera_height;
 
-    for(int i = 0; i < DRAW_DIST; ++i)
+    for(int i = 0; i < camera->draw_dist; ++i)
     {
         struct road_segment *seg = &road[(base->idx + i) % road_length];
 

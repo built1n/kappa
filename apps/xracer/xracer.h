@@ -39,7 +39,7 @@
 
 /* road parameters */
 #define ROAD_WIDTH (LCD_WIDTH/2) /* actually half the road width for easier math */
-#define MAX_ROAD_LENGTH 4096
+#define MAX_ROAD_LENGTH 16384
 #define SEGMENT_LENGTH (LCD_WIDTH * 12)
 
 /* road generator parameters */

@@ -87,6 +87,8 @@ enum plugin_status do_flythrough(void)
     /* y is automatically calculated */
     camera.pos.z = 0;
 
+    camera.draw_dist = DRAW_DIST;
+
     //generate_test_road();
 
     //road_length = load_map(road, MAX_ROAD_LENGTH, loop_map, ARRAYLEN(loop_map));
@@ -104,25 +106,64 @@ enum plugin_status do_flythrough(void)
     while(1)
     {
         int button = rb->button_get();
+        int mod = rb->modifier_get();
         switch(button)
         {
         case BUTTON_UP:
-            camera_height += MANUAL_SPEED;
+            switch(mod)
+            {
+            case MODIFIER_NONE:
+                camera_height += MANUAL_SPEED;
+                break;
+            case MODIFIER_CTRL:
+                camera.depth += 1;
+                break;
+            case MODIFIER_ALT:
+                camera.pos.z += MANUAL_SPEED;
+                break;
+            }
             break;
         case BUTTON_DOWN:
-            camera_height -= MANUAL_SPEED;
+            switch(mod)
+            {
+            case MODIFIER_NONE:
+                camera_height -= MANUAL_SPEED;
+                break;
+            case MODIFIER_CTRL:
+                camera.depth -= 1;
+                break;
+            case MODIFIER_ALT:
+                camera.pos.z -= MANUAL_SPEED;
+                break;
+            }
             break;
         case BUTTON_LEFT:
-            camera.pos.x -= MANUAL_SPEED;
+            switch(mod)
+            {
+            case MODIFIER_NONE:
+                camera.pos.x -= MANUAL_SPEED;
+                break;
+            case MODIFIER_CTRL:
+                camera.draw_dist -= 8;
+                break;
+            }
             break;
         case BUTTON_RIGHT:
-            camera.pos.x += MANUAL_SPEED;
+            switch(mod)
+            {
+            case MODIFIER_NONE:
+                camera.pos.x += MANUAL_SPEED;
+                break;
+            case MODIFIER_CTRL:
+                camera.draw_dist += 8;
+                break;
+            }
             break;
         }
 
         camera.pos.z += 512;
         /* loop the track right before going off the "end" */
-        camera.pos.z %= (road_length - DRAW_DIST) * SEGMENT_LENGTH;
+        camera.pos.z %= (road_length - camera.draw_dist) * SEGMENT_LENGTH;
 
         render(&camera, road, road_length, camera_height);
 

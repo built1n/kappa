@@ -41,13 +41,46 @@ uint8_t ps2kbd_button_get(void)
     return ret;
 }
 
+static uint8_t ps2_ctrl;
+static uint8_t ps2_shift;
+static uint8_t ps2_alt;
+
+uint8_t ps2kbd_modifier_get(void)
+{
+    uint8_t ret = 0;
+    if(ps2_ctrl)
+        ret |= MODIFIER_CTRL;
+    if(ps2_shift)
+        ret |= MODIFIER_SHIFT;
+    if(ps2_alt)
+        ret |= MODIFIER_ALT;
+    return ret;
+}
+
 static void key_handler(struct regs_t *regs)
 {
     (void) regs;
     uint8_t scancode = inb(0x60);
     switch(scancode)
     {
-        /* ... the only one we care about! */
+    case 0x2A:
+        ps2_shift = 1;
+        break;
+    case 0xAA:
+        ps2_shift = 0;
+        break;
+    case 0x1D:
+        ps2_ctrl = 1;
+        break;
+    case 0x9D:
+        ps2_ctrl = 0;
+        break;
+    case 0x38:
+        ps2_alt = 1;
+        break;
+    case 0xB8:
+        ps2_alt = 0;
+        break;
     case 0xE0:
     {
         uint8_t spec = inb(0x60);
