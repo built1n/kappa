@@ -12,7 +12,7 @@
 #include "multiboot.h"
 #include "panic.h"
 #include "pcspkr.h"
-#include "ps2.h"
+#include "ps2kbd.h"
 #include "fpu.h"
 #include "timer.h"
 #include "tty.h"
@@ -78,7 +78,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     /* initialize other drivers */
     timer_init(HZ);
-    ps2_init();
+    ps2kbd_init();
 
     set_interrupt_handler(0, div0);
     set_interrupt_handler(0xd, gpf);
@@ -225,7 +225,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     while(1)
     {
-        ps2_set_leds(PS2_NUM_LOCK);
+        ps2kbd_set_leds(PS2_NUM_LOCK);
         timer_delay(HZ/4);
         if(s < 0)
             putchar('\b');
@@ -234,7 +234,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         n+=s;
         if(n<=0 || n>=3)
             s=-s;
-        ps2_set_leds(PS2_CAPS_LOCK);
+        ps2kbd_set_leds(PS2_CAPS_LOCK);
         timer_delay(HZ/4);
         if(s < 0)
             putchar('\b');
@@ -243,7 +243,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         n+=s;
         if(n<=0 || n>=3)
             s=-s;
-        ps2_set_leds(PS2_SCROLL_LOCK);
+        ps2kbd_set_leds(PS2_SCROLL_LOCK);
         timer_delay(HZ/4);
         if(s < 0)
             putchar('\b');
@@ -252,7 +252,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
         n+=s;
         if(n<=0 || n>=3)
             s=-s;
-        ps2_set_leds(PS2_CAPS_LOCK);
+        ps2kbd_set_leds(PS2_CAPS_LOCK);
         timer_delay(HZ/4);
         if(s < 0)
             putchar('\b');

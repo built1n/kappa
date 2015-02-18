@@ -56,13 +56,18 @@ static inline int project(int cam_x, int cam_y, int cam_z, int camera_depth, str
     rel_x = pt_3d->x - cam_x;
     rel_y = pt_3d->y - cam_y;
     rel_z = pt_3d->z - cam_z;
-    float scale = (float)camera_depth / rel_z;
-    pt_2d->x = (LCD_WIDTH/2) + (scale * rel_x * (LCD_WIDTH/2));
-    pt_2d->y = (LCD_WIDTH/2) - (scale * rel_y * (LCD_HEIGHT/2));
-    pt_2d->w = scale * ROAD_WIDTH * (LCD_WIDTH/2);
-    if(scale_return)
-        *scale_return=scale;
-    return rel_z;
+    if(rel_z != 0)
+    {
+        float scale = (float)camera_depth / rel_z;
+        pt_2d->x = (LCD_WIDTH/2) + (scale * rel_x * (LCD_WIDTH/2));
+        pt_2d->y = (LCD_WIDTH/2) - (scale * rel_y * (LCD_HEIGHT/2));
+        pt_2d->w = scale * ROAD_WIDTH * (LCD_WIDTH/2);
+        if(scale_return)
+            *scale_return=scale;
+
+        return rel_z;
+    }
+    return -1;
 }
 
 static inline int border_width(int projected_road_width, int lanes)

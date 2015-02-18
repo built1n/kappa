@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "gfx.h"
+#include "ps2kbd.h"
 #include "timer.h"
 
 #define LCD_WIDTH (*gfx_width)
@@ -48,6 +49,8 @@ struct plugin_api {
     void (*lcd_fillcircle)(int x, int y, int r);
     void (*lcd_update)(void);
     void (*lcd_putsxy)(int x, int y, const char*);
+
+    int  (*button_get)(void);
 };
 
 /* defined by the plugin */

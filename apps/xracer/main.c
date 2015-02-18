@@ -93,9 +93,6 @@ enum plugin_status do_flythrough(void)
 
     //road_length = load_external_map(road, MAX_ROAD_LENGTH, "/output.xrm");
 
-    road_length = -1;
-
-
     road_length = MAX_ROAD_LENGTH;
 
     generate_random_road(road, road_length, HILLS, CURVES);
@@ -106,6 +103,23 @@ enum plugin_status do_flythrough(void)
 
     while(1)
     {
+        int button = rb->button_get();
+        switch(button)
+        {
+        case BUTTON_UP:
+            camera_height += MANUAL_SPEED;
+            break;
+        case BUTTON_DOWN:
+            camera_height -= MANUAL_SPEED;
+            break;
+        case BUTTON_LEFT:
+            camera.pos.x -= MANUAL_SPEED;
+            break;
+        case BUTTON_RIGHT:
+            camera.pos.x += MANUAL_SPEED;
+            break;
+        }
+
         camera.pos.z += 512;
         /* loop the track right before going off the "end" */
         camera.pos.z %= (road_length - DRAW_DIST) * SEGMENT_LENGTH;

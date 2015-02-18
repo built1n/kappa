@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "plugin.h"
 #include "gfx.h"
+#include "ps2kbd.h"
 
 static void plugin_clear(void)
 {
@@ -22,6 +23,11 @@ static void plugin_hline(int a, int b, int c)
     gfx_hline(a, b, c);
 }
 
+static int button_get(void)
+{
+    return ps2kbd_button_get();
+}
+
 static const struct plugin_api kappa_api = {
     &plugin_clear,
     &plugin_hline,
@@ -40,7 +46,8 @@ static const struct plugin_api kappa_api = {
     &gfx_drawcircle,
     &gfx_fillcircle,
     &gfx_update,
-    &gfx_putsxy
+    &gfx_putsxy,
+    &button_get
 };
 
 void plugin_load(enum plugin_status (*plugin)(const struct plugin_api*))

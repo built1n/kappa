@@ -12,7 +12,7 @@ drivers/gfx.o
 drivers/gfx-as.o
 drivers/gfx_font.o
 drivers/pcspkr.o
-drivers/ps2.o
+drivers/ps2kbd.o
 drivers/tty.o
 kernel/fpu.o
 kernel/gdt-as.o

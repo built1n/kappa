@@ -51,7 +51,7 @@
 #define LANES 3
 
 /* camera parameters */
-#define DRAW_DIST 256
+#define DRAW_DIST 1024
 
 /* NOTE: FOV is not used, the tangent value (see below) is */
 #define CAMERA_FOV 120 /* in degrees */
@@ -60,7 +60,7 @@
 
 /* game parameters */
 /* currently this is how far the camera moves per keypress */
-#define MANUAL_SPEED 50
+#define MANUAL_SPEED 10
 
 /* number of bits to use for the fractional part of fixed-point numbers */
 /* note that FOV calculation always uses 14 by default */
