@@ -103,6 +103,8 @@ enum plugin_status do_flythrough(void)
 
     long last_timestamp = *current_tick;
 
+    uint64_t frame = 0;
+
     while(1)
     {
         int button = rb->button_get();
@@ -173,11 +175,32 @@ enum plugin_status do_flythrough(void)
         SET_FOREGROUND(LCD_WHITE);
         PUTSXY(0, 0, buf);
 
+        snprintf(buf, sizeof(buf), "CAMERA: (%d, %d, %d)", camera.pos.x, camera.pos.y, camera.pos.z);
+        SET_FOREGROUND(LCD_WHITE);
+        PUTSXY(0, 12, buf);
+
+        snprintf(buf, sizeof(buf), "DEPTH: %d", camera.depth);
+        SET_FOREGROUND(LCD_WHITE);
+        PUTSXY(0, 24, buf);
+
+        snprintf(buf, sizeof(buf), "DRAWDIST: %d", camera.draw_dist);
+        SET_FOREGROUND(LCD_WHITE);
+        PUTSXY(0, 36, buf);
+
+        snprintf(buf, sizeof(buf), "FRAME #%d", frame);
+        SET_FOREGROUND(LCD_WHITE);
+        PUTSXY(0, 48, buf);
+
+        snprintf(buf, sizeof(buf), "FPS: %d",  HZ/(!dt?1:dt));
+        SET_FOREGROUND(LCD_WHITE);
+        PUTSXY(0, 60, buf);
+
         LCD_UPDATE();
 
         //rb->sleep((HZ/100)-dt);
         YIELD();
         last_timestamp = *current_tick;
+        ++frame;
     }
 }
 
