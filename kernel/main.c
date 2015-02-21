@@ -10,6 +10,7 @@
 #include "irq.h"
 #include "log.h"
 #include "multiboot.h"
+#include "paging.h"
 #include "panic.h"
 #include "pcspkr.h"
 #include "ps2kbd.h"
@@ -46,6 +47,11 @@ void div0(struct regs_t *regs)
     panic("Divide by zero!\n");
 }
 
+void nothin(struct regs_t* regs)
+{
+    (void) regs;
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
@@ -55,6 +61,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("GFX init\n");
     bool gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
+    printf("GFX init done.\n");
 
     /* if graphical initialization fails, fall back to text mode */
     if(!gfx_status)
@@ -83,12 +90,20 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     set_interrupt_handler(0, div0);
     set_interrupt_handler(0xd, gpf);
     set_interrupt_handler(0x80, int80);
+    set_interrupt_handler(6, nothin);
+
+    paging_init();
+
+    printf("Paging enabled.\n");
 
     asm("sti");
 
     printf("Boot finished.\n");
 
     printf("Kernel version %s: \"%s\"\n", KAPPA_KERNEL_VERSION, KAPPA_KERNEL_CODENAME);
+
+    while(1)
+        asm("hlt");
 
     printf("Starting linked-in application XRacer...\n");
     //printf("Running graphics benchmark...\n");

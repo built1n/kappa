@@ -13,6 +13,7 @@ drivers/gfx-as.o
 drivers/gfx_font.o
 drivers/pcspkr.o
 drivers/ps2kbd.o
+drivers/ps2_keymaps.o
 drivers/tty.o
 kernel/fpu.o
 kernel/gdt-as.o
@@ -26,6 +27,8 @@ kernel/isr-as.o
 kernel/isr.o
 kernel/log.o
 kernel/main.o
+kernel/paging.o
+kernel/paging-as.o
 kernel/panic.o
 kernel/timer.o
 libc/stdio.o

@@ -61,59 +61,17 @@ static void key_handler(struct regs_t *regs)
 {
     (void) regs;
     uint8_t scancode = inb(0x60);
-    switch(scancode)
+    if(scancode == 0xE0)
+        /* extended, forget it! */
+        return;
+    /* AND by 0x7F to get in the range of [0,128) */
+    int type = ps2_scancodes_set1[scancode & 0x7F];
+    int release = (scancode & 0x80) >> 7;
+    switch(type)
     {
-    case 0x2A:
-        ps2_shift = 1;
-        break;
-    case 0xAA:
-        ps2_shift = 0;
-        break;
-    case 0x1D:
-        ps2_ctrl = 1;
-        break;
-    case 0x9D:
-        ps2_ctrl = 0;
-        break;
-    case 0x38:
-        ps2_alt = 1;
-        break;
-    case 0xB8:
-        ps2_alt = 0;
-        break;
-    case 0xE0:
-    {
-        uint8_t spec = inb(0x60);
-        switch(spec)
-        {
-        case 0x48:
-            ps2_arrowkeys[IDX_UP] = 1;
-            break;
-        case 0x4B:
-            ps2_arrowkeys[IDX_LEFT] = 1;
-            break;
-        case 0x50:
-            ps2_arrowkeys[IDX_DOWN] = 1;
-            break;
-        case 0x4D:
-            ps2_arrowkeys[IDX_RIGHT] = 1;
-            break;
-        case 0xC8:
-            ps2_arrowkeys[IDX_UP] = 0;
-            break;
-        case 0xCB:
-            ps2_arrowkeys[IDX_LEFT] = 0;
-            break;
-        case 0xD0:
-            ps2_arrowkeys[IDX_DOWN] = 0;
-            break;
-        case 0xCD:
-            ps2_arrowkeys[IDX_RIGHT] = 0;
-            break;
-        }
-        break;
-    }
-    default:
+    case PRINTING_KEY:
+        if(!release)
+            putchar(ps2_set1_ascii[scancode]);
         break;
     }
 }
