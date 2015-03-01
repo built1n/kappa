@@ -2,7 +2,6 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-#include "frame.h"
 #include "heap.h"
 #include "isr.h"
 #include "paging.h"
