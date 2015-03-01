@@ -1,7 +1,7 @@
 OBJ := $(shell cat OBJ)
 CC = gcc
 LD = ld
-INCLUDES = -Idrivers/include -Ikernel/include -Ilibc/include -Iapps/
+INCLUDES = -Iinclude -Iapps -Iinclude/arch/i686 -Iinclude/arch/i686/drivers -Iinclude/kernel
 
 CFLAGS = -std=gnu99 -ffreestanding -fno-stack-protector -nostdlib -Wall -Wextra -m32 $(INCLUDES) -g
 OPTFLAGS = -fexpensive-optimizations -ftree-loop-vectorize -finline-functions -fomit-frame-pointer -ftree-vectorize -O1 -mtune=generic
@@ -35,10 +35,10 @@ kappa.iso: kappa.bin
 	@grub-mkrescue -o kappa.iso $(ISODIR) 2> /dev/null
 
 kappa.bin: $(OBJ) $(SOURCES) Makefile
-	@$(LD) -T kernel/linker.ld -o kappa.bin -melf_i386 $(OBJ) -L /usr/lib32 -lgcc_s -static
 	@echo "LD $@"
+	@$(LD) -T arch/i686/linker.ld -o kappa.bin -melf_i386 $(OBJ) -L /usr/lib32 -lgcc_s -static
 
-drivers/gfx.o: drivers/gfx.c Makefile
+arch/i686/drivers/gfx.o: arch/i686/drivers/gfx.c Makefile
 	@echo "CC $<"
 	@$(CC) $(CFLAGS) -O3 -msse -c $< -o $@
 

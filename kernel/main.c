@@ -266,7 +266,9 @@ static void keyhandler(const struct ps2_keyevent *ev)
             putchar(toupper(ev->ascii));
         }
         else
+        {
             putchar(ev->ascii);
+        }
     }
 }
 
