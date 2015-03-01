@@ -82,3 +82,40 @@ int printf(const char *fmt, ...)
     va_end(ap);
     return 0;
 }
+
+int vprintf(const char *fmt, va_list ap)
+{
+    while(*fmt)
+    {
+        char ch = *fmt++;
+        switch(ch)
+        {
+        case '%':
+        {
+            switch(*fmt++)
+            {
+            case 'c':
+                putchar(va_arg(ap, int));
+                break;
+            case 's':
+                puts(va_arg(ap, const char*));
+                break;
+            case 'x':
+                print_hex(va_arg(ap, unsigned));
+                break;
+            case 'd':
+                puts(itoa(va_arg(ap, unsigned), 10));
+                break;
+            default:
+                puts("printf: unknown format\n");
+                break;
+            }
+            break;
+        }
+        default:
+            putchar(ch);
+            break;
+        }
+    }
+    return 0;
+}
