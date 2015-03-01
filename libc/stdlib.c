@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "heap.h"
 #include "panic.h"
 
 /* adapted from <http://www.strudel.org.uk/itoa/> */
@@ -84,18 +85,6 @@ int abs(int val)
 void *malloc(size_t sz)
 {
     return kmalloc(sz);
-    static uint8_t mallocbuf[1024*1024*16];
-    static uint8_t *next_ptr = mallocbuf;
-    static int bytes_left = sizeof(mallocbuf);
-    bytes_left -= sz;
-    if(bytes_left < 0)
-        return NULL;
-    else
-    {
-        void *ret = next_ptr;
-        next_ptr += sz;
-        return ret;
-    }
 }
 
 static inline int snputs(char *buf, int idx, int sz, const char *str)
