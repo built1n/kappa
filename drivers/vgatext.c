@@ -3,7 +3,7 @@
 #include "gfx.h"
 #include "io.h"
 #include "panic.h"
-#include "tty.h"
+#include "vgatext.h"
 
 static int term_x, term_y;
 static uint8_t term_col;
@@ -16,7 +16,7 @@ static uint16_t video_detect_hardware(void)
     return *ptr;
 }
 
-void tty_init(void)
+void vgatext_init(void)
 {
     uint16_t vid_type = video_detect_hardware() & 0x30;
     if(vid_type == 0x20)
@@ -31,12 +31,12 @@ void tty_init(void)
     else
     {
         /* none */
-        panic("TTY init failed!");
+        panic("VGATEXT init failed!");
     }
-    tty_set_color(VGA_MAKE_COLOR(VGA_LIGHT_GRAY, VGA_BLACK));
-    tty_clear();
-    set_putchar(tty_putchar);
-    set_puts(tty_puts);
+    vgatext_set_color(VGA_MAKE_COLOR(VGA_LIGHT_GRAY, VGA_BLACK));
+    vgatext_clear();
+    set_putchar(vgatext_putchar);
+    set_puts(vgatext_puts);
 }
 
 static void move_cursor(uint16_t cursor_idx)
@@ -52,7 +52,7 @@ static void update_cursor(void)
     move_cursor(term_y * VGA_WIDTH + term_x);
 }
 
-void tty_clear(void)
+void vgatext_clear(void)
 {
     term_x = 0;
     term_y = 0;
@@ -65,32 +65,32 @@ void tty_clear(void)
     }
 }
 
-void tty_set_color(uint8_t color)
+void vgatext_set_color(uint8_t color)
 {
     term_col = color;
 }
 
-uint8_t tty_get_color(void)
+uint8_t vgatext_get_color(void)
 {
     return term_col;
 }
 
-void tty_putchar_at(int ch, uint8_t col, int x, int y)
+void vgatext_putchar_at(int ch, uint8_t col, int x, int y)
 {
     term_buf[y * VGA_WIDTH + x] = VGA_MAKE_ENTRY((char)ch, col);
 }
 
-void tty_putchar(int ch)
+void vgatext_putchar(int ch)
 {
     if(ch != '\n' && ch != '\b')
     {
-        tty_putchar_at(ch, term_col, term_x, term_y);
+        vgatext_putchar_at(ch, term_col, term_x, term_y);
         if(++term_x == VGA_WIDTH)
         {
             term_x = 0;
             if(++term_y == VGA_HEIGHT)
             {
-                tty_clear();
+                vgatext_clear();
                 term_y = 0;
             }
         }
@@ -100,7 +100,7 @@ void tty_putchar(int ch)
         term_x = 0;
         if(++term_y == VGA_HEIGHT)
         {
-            tty_clear();
+            vgatext_clear();
             term_y = 0;
         }
     }
@@ -109,16 +109,16 @@ void tty_putchar(int ch)
         int temp_x = term_x - 1;
         if(temp_x >= 0)
             term_x = temp_x;
-        tty_putchar_at(' ', term_col, term_x, term_y);
+        vgatext_putchar_at(' ', term_col, term_x, term_y);
     }
 
     update_cursor();
 }
 
-void tty_puts(const char *str)
+void vgatext_puts(const char *str)
 {
     while(*str)
     {
-        tty_putchar(*str++);
+        vgatext_putchar(*str++);
     }
 }

@@ -14,7 +14,7 @@ drivers/gfx_font.o
 drivers/pcspkr.o
 drivers/ps2_keymaps.o
 drivers/ps2kbd.o
-drivers/tty.o
+drivers/vgatext.o
 kernel/fpu.o
 kernel/gdt-as.o
 kernel/gdt.o

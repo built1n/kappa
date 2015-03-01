@@ -16,8 +16,8 @@
 #include "ps2kbd.h"
 #include "fpu.h"
 #include "timer.h"
-#include "tty.h"
 #include "version.h"
+#include "vgatext.h"
 
 void gpf(struct regs_t *regs)
 {
@@ -115,8 +115,8 @@ bool boot(struct multiboot_info_t *hdr, uint32_t magic)
     /* if graphical initialization fails, fall back to text mode */
     if(!gfx_status)
     {
-        tty_init();
-        printf("Graphics init failed, fell back to text mode.\n");
+        vgatext_init();
+        printf("Graphics init failed, fell back to VGA text mode.\n");
     }
 
     if(magic != 0x2BADB002)
