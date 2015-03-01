@@ -82,7 +82,7 @@ void tty_putchar_at(int ch, uint8_t col, int x, int y)
 
 void tty_putchar(int ch)
 {
-    if(ch != '\n')
+    if(ch != '\n' && ch != '\b')
     {
         tty_putchar_at(ch, term_col, term_x, term_y);
         if(++term_x == VGA_WIDTH)
@@ -95,7 +95,7 @@ void tty_putchar(int ch)
             }
         }
     }
-    else
+    else if(ch == '\n')
     {
         term_x = 0;
         if(++term_y == VGA_HEIGHT)
@@ -104,6 +104,14 @@ void tty_putchar(int ch)
             term_y = 0;
         }
     }
+    else if(ch == '\b')
+    {
+        int temp_x = term_x - 1;
+        if(temp_x >= 0)
+            term_x = temp_x;
+        tty_putchar_at(' ', term_col, term_x, term_y);
+    }
+
     update_cursor();
 }
 

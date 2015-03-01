@@ -53,8 +53,8 @@ void paging_init(void)
         kernel_directory[i] = PAGE_RW;
     }
 
-    /* identity map all 4GB */
-    for(int i=0; i < 1024; ++i)
+    /* identity map all 4GB (and allocate all page tables) */
+    for(int i = 0; i < 1024; ++i)
         kernel_directory[i] = (uint32_t)identity_map_table(i * 1024, PAGE_PRESENT | PAGE_RW) |
             PAGE_PRESENT | PAGE_RW;
 

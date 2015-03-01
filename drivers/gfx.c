@@ -6,6 +6,7 @@
 #include "gfx_font.h"
 #include "log.h"
 #include "multiboot.h"
+#include "paging.h"
 #include "panic.h"
 #include "gfx.h"
 
@@ -178,16 +179,8 @@ void gfx_putchar(int ch)
     else if(ch == '\b')
     {
         int temp_x = cursor_x - FONT_WIDTH;
-        if(temp_x < 0)
-        {
-            cursor_x = 0;
-            int temp_y = cursor_y - FONT_HEIGHT;
-            cursor_y = (temp_y < 0) ? 0 : temp_y;
-        }
-        else
-        {
+        if(temp_x >= 0)
             cursor_x = temp_x;
-        }
         gfx_drawchar_bg(cursor_x, cursor_y, ' ');
     }
 }

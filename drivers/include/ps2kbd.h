@@ -47,12 +47,19 @@ struct ps2_specialkeys_t {
     int f12        :1;
 };
 
+struct ps2_keyevent {
+    const struct ps2_specialkeys_t *special_keys;
+    char ascii;
+};
+
 /* returns which arrow keys are down */
 uint8_t ps2kbd_button_get(void);
 
 uint8_t ps2kbd_modifier_get(void);
 
 void ps2kbd_set_leds(uint8_t status);
+
+void ps2kbd_set_handler(void (*h)(const struct ps2_keyevent*));
 
 void ps2kbd_init(void);
 

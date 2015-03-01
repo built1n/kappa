@@ -161,3 +161,17 @@ void assert_fail(const char *func, const char *file, int line)
     printf("\nAssertion failed in function %s in file %s, line %d\n", func, file, line);
     panic("assertion failed!\n");
 }
+
+int toupper(int ch)
+{
+    if('a' <= ch && ch <= 'z')
+        return ch ^ (1<<5);
+    return ch;
+}
+
+int tolower(int ch)
+{
+    if('A' <= ch && ch <= 'Z')
+        return ch ^ (1<<5);
+    return ch;
+}

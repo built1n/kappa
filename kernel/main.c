@@ -256,12 +256,28 @@ void run_gfx_benchmark(void)
     printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
 }
 
+static void keyhandler(const struct ps2_keyevent *ev)
+{
+    if(ev->ascii)
+    {
+        if(ev->special_keys->ctrl)
+        {
+            putchar('^');
+            putchar(toupper(ev->ascii));
+        }
+        else
+            putchar(ev->ascii);
+    }
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     bool gfx_status = boot(hdr, magic);
     gfx_set_foreground(0x80FF80);
     printf("Hello, world!\n");
     gfx_set_foreground(GFX_WHITE);
+
+    ps2kbd_set_handler(keyhandler);
 
     while(1)asm("hlt");
 

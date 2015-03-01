@@ -138,6 +138,8 @@ static void handle_extended_scancode(void)
     //printf("Extended scancode: 0x%x\n", temp);
 }
 
+void (*keyevent_handler)(const struct ps2_keyevent*);
+
 static void key_handler(struct regs_t *regs)
 {
     (void) regs;
@@ -153,6 +155,7 @@ static void key_handler(struct regs_t *regs)
 
     int type = ps2_set1_scancodes[scancode & 0x7F];
     int release = (scancode & (1<<7)) >> 7;
+    char ascii = '\0';
     switch(type)
     {
     case PRINTING_KEY:
@@ -163,9 +166,9 @@ static void key_handler(struct regs_t *regs)
             if(special_keys.shift)
                 capitals = ~capitals;
             if(capitals)
-                putchar(ps2_set1_shift[scancode]);
+                ascii = ps2_set1_shift[scancode];
             else
-                putchar(ps2_set1_ascii[scancode]);
+                ascii = ps2_set1_ascii[scancode];
         }
         break;
     }
@@ -174,7 +177,14 @@ static void key_handler(struct regs_t *regs)
         break;
     }
     if(special_keys.bksp)
-        putchar('\b');
+        ascii = '\b';
+    if(keyevent_handler)
+    {
+        struct ps2_keyevent ev;
+        ev.special_keys = &special_keys;
+        ev.ascii = ascii;
+        keyevent_handler(&ev);
+    }
 }
 
 static void ps2_set_scancode_set(uint8_t set)
@@ -189,6 +199,11 @@ static void keyboard_init(void)
     set_interrupt_handler(IRQ(1), key_handler);
     ps2_set_scancode_set(1);
     memset(&special_keys, 0, sizeof(special_keys));
+}
+
+void ps2kbd_set_handler(void (*handler)(const struct ps2_keyevent*))
+{
+    keyevent_handler = handler;
 }
 
 void ps2kbd_init(void)

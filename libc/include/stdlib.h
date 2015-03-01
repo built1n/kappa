@@ -22,6 +22,8 @@ int abs(int);
 void *malloc(size_t);
 int snprintf(char*, int, const char*, ...);
 void assert_fail(const char*, const char*, int);
+int toupper(int);
+int tolower(int);
 
 #define assert(x) if(!(x))assert_fail(__func__, __FILE__, __LINE__);
 
