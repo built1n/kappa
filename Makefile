@@ -54,5 +54,3 @@ clean:
 	@echo "Cleaning build directory..."
 	@rm -f $(OBJ) kappa.iso kappa.bin
 	@rm -rf $(ISODIR)
-
-include autodeps
