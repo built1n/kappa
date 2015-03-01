@@ -134,6 +134,7 @@ static void handle_special_key(uint8_t scancode, int release)
 static void handle_extended_scancode(void)
 {
     uint8_t temp = inb(0x60);
+    (void) temp;
     //printf("Extended scancode: 0x%x\n", temp);
 }
 

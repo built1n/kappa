@@ -6,8 +6,8 @@
 /* a simple pointer-arithmetic-based malloc */
 
 /* a symbol put there by the linker */
-extern uint32_t link_mem_end;
-uint32_t kmalloc_addr = &link_mem_end;
+extern char link_mem_end;
+uint32_t kmalloc_addr = (uint32_t)&link_mem_end;
 
 static void *kmalloc_int(size_t sz, int align, void **phys)
 {
