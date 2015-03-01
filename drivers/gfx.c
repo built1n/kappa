@@ -541,5 +541,7 @@ bool gfx_init(struct vbe_info_t *vbe_mode_info)
         gfx_reset();
     }
 
+    printf("Real FB addr: 0x%x\n", (uint32_t)real_framebuffer);
+
     return true;
 }

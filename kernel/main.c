@@ -61,6 +61,7 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("GFX init\n");
     bool gfx_status = gfx_init((struct vbe_info_t*)hdr->vbe_mode_info);
+    //bool gfx_status = false;
     printf("GFX init done.\n");
 
     /* if graphical initialization fails, fall back to text mode */

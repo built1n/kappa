@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "panic.h"
 
 /* adapted from <http://www.strudel.org.uk/itoa/> */
 char* itoa(int val, int base)
@@ -149,4 +150,10 @@ int snprintf(char *buf, int sz, const char *fmt, ...)
     buf[i] = '\0';
     va_end(ap);
     return 0;
+}
+
+void assert_fail(const char *func, const char *file, int line)
+{
+    printf("\nAssertion failed in function %s in file %s, line %d\n", func, file, line);
+    panic("assertion failed!\n");
 }

@@ -18,6 +18,7 @@ drivers/tty.o
 kernel/fpu.o
 kernel/gdt-as.o
 kernel/gdt.o
+kernel/heap.o
 kernel/idt-as.o
 kernel/idt.o
 kernel/io.o
