@@ -52,7 +52,55 @@ void nothin(struct regs_t* regs)
     (void) regs;
 }
 
-void main(struct multiboot_info_t *hdr, uint32_t magic)
+void flash_leds(void)
+{
+    printf("Testing keyboard LED's");
+
+    int n = 0;
+    int s = 1;
+
+    while(1)
+    {
+        ps2kbd_set_leds(PS2_NUM_LOCK);
+        timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
+        ps2kbd_set_leds(PS2_CAPS_LOCK);
+        timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
+        ps2kbd_set_leds(PS2_SCROLL_LOCK);
+        timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
+        ps2kbd_set_leds(PS2_CAPS_LOCK);
+        timer_delay(HZ/4);
+        if(s < 0)
+            putchar('\b');
+        else
+            putchar('.');
+        n+=s;
+        if(n<=0 || n>=3)
+            s=-s;
+    }
+}
+
+bool boot(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
 
@@ -103,8 +151,122 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
 
     printf("Kernel version %s: \"%s\"\n", KAPPA_KERNEL_VERSION, KAPPA_KERNEL_CODENAME);
 
-    while(1)
-        asm("hlt");
+    return gfx_status;
+}
+
+void run_gfx_benchmark(void)
+{
+    const int width = *gfx_width;
+    const int height = *gfx_height;
+
+    gfx_reset();
+
+    int startpix = *current_tick;
+    for(int i=0;i<1000000;++i)
+    {
+        int rx = rand() % width;
+        int ry = rand() % height;
+
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_drawpixel(rx, ry);
+    }
+    int endpix = *current_tick;
+
+    gfx_reset();
+
+    int startfill = *current_tick;
+    for(int i=0;i<1000;++i)
+    {
+        gfx_set_background(rand() % 0x1000000);
+        gfx_clear();
+    }
+    int endfill = *current_tick;
+
+    gfx_reset();
+
+    int starttext = *current_tick;
+    for(int i=0;i<1000000;++i)
+    {
+        int rx = rand() % width;
+        int ry = rand() % height;
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_drawchar(rx, ry, rand()%127+1);
+    }
+    int endtext = *current_tick;
+
+    gfx_reset();
+
+    int starthline = *current_tick;
+    for(int i=0;i<1000000;++i)
+    {
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_hline(rand() % width, rand() % width, rand() % height);
+    }
+    int endhline = *current_tick;
+
+    gfx_reset();
+
+    int startvline = *current_tick;
+    for(int i=0;i<1000000;++i)
+    {
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_vline(rand() % height, rand() % height, rand() % width);
+    }
+    int endvline = *current_tick;
+
+    gfx_reset();
+
+    int startrect = *current_tick;
+    for(int i=0;i<10000;++i)
+    {
+        int x = rand() % width;
+        int y = rand() % height;
+        int w = rand() % (width - x);
+        int h = rand() % (height - y);
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_fillrect(x, y, w, h);
+    }
+    int endrect = *current_tick;
+
+    gfx_reset();
+
+    int startline = *current_tick;
+    for(int i=0;i<1000000;++i)
+    {
+        int x1= rand() % width;
+        int x2= rand() % width;
+        int y1= rand() % height;
+        int y2= rand() % height;
+        gfx_set_foreground(rand() % 0x1000000);
+        gfx_drawline(x1, y1, x2, y2);
+    }
+    int endline = *current_tick;
+
+    gfx_reset();
+
+    printf("--- Graphics benchmark results ---\n");
+    printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
+    printf("Ticks for 1,000 random fills:      %d\n", endfill-startfill);
+    printf("Ticks for 1,000,000 random chars:  %d\n", endtext-starttext);
+    printf("Ticks for 1,000,000 random hlines: %d\n", endhline-starthline);
+    printf("Ticks for 1,000,000 random vlines: %d\n", endvline-startvline);
+    printf("Ticks for 10,000 random rects:     %d\n", endrect-startrect);
+    printf("Ticks for 1,000,000 random lines:  %d\n", endline-startline);
+    printf("Ticks per second:                  %d\n", HZ);
+    printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
+}
+
+void main(struct multiboot_info_t *hdr, uint32_t magic)
+{
+    bool gfx_status = boot(hdr, magic);
+    gfx_set_foreground(0x80FF80);
+    printf("Hello, world!\n");
+    gfx_set_foreground(GFX_WHITE);
+
+    while(1)asm("hlt");
+
+    //char *ptr = 0xA00000;
+    //putchar(*ptr);
 
     printf("Starting linked-in application XRacer...\n");
     //printf("Running graphics benchmark...\n");
@@ -117,165 +279,11 @@ void main(struct multiboot_info_t *hdr, uint32_t magic)
     extern enum plugin_status xracer_main(const struct plugin_api*);
     extern void plugin_load(enum plugin_status (*func)(const struct plugin_api*));
 
-    plugin_load(xracer_main);
-
-    gfx_filltriangle(100, 100, 100, 100, 100, 100);
-
-    for(int i=0;i<200;)
-    {
-        gfx_putsxy_bg(i, 0, " ");
-        gfx_drawchar_bg(++i, 0, 131);
-        timer_delay(1);
-    }
-    while(1);
+    //plugin_load(xracer_main);
 
     if(gfx_status)
     {
-        const int width = *gfx_width;
-        const int height = *gfx_height;
-
-        gfx_reset();
-
-        int startpix = *current_tick;
-        for(int i=0;i<1000000;++i)
-        {
-            int rx = rand() % width;
-            int ry = rand() % height;
-
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_drawpixel(rx, ry);
-        }
-        int endpix = *current_tick;
-
-        gfx_reset();
-
-        int startfill = *current_tick;
-        for(int i=0;i<1000;++i)
-        {
-            gfx_set_background(rand() % 0x1000000);
-            gfx_clear();
-        }
-        int endfill = *current_tick;
-
-        gfx_reset();
-
-        int starttext = *current_tick;
-        for(int i=0;i<1000000;++i)
-        {
-            int rx = rand() % width;
-            int ry = rand() % height;
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_drawchar(rx, ry, rand()%127+1);
-        }
-        int endtext = *current_tick;
-
-        gfx_reset();
-
-        int starthline = *current_tick;
-        for(int i=0;i<1000000;++i)
-        {
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_hline(rand() % width, rand() % width, rand() % height);
-        }
-        int endhline = *current_tick;
-
-        gfx_reset();
-
-        int startvline = *current_tick;
-        for(int i=0;i<1000000;++i)
-        {
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_vline(rand() % height, rand() % height, rand() % width);
-        }
-        int endvline = *current_tick;
-
-        gfx_reset();
-
-        int startrect = *current_tick;
-        for(int i=0;i<10000;++i)
-        {
-            int x = rand() % width;
-            int y = rand() % height;
-            int w = rand() % (width - x);
-            int h = rand() % (height - y);
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_fillrect(x, y, w, h);
-        }
-        int endrect = *current_tick;
-
-        gfx_reset();
-
-        int startline = *current_tick;
-        for(int i=0;i<1000000;++i)
-        {
-            int x1= rand() % width;
-            int x2= rand() % width;
-            int y1= rand() % height;
-            int y2= rand() % height;
-            gfx_set_foreground(rand() % 0x1000000);
-            gfx_drawline(x1, y1, x2, y2);
-            char buf[32];
-            snprintf(buf, 32, "Line %d", i);
-            gfx_putsxy(0, 0, buf);
-        }
-        int endline = *current_tick;
-
-        gfx_reset();
-
-        printf("--- Graphics benchmark results ---\n");
-        printf("Ticks for 1,000,000 random pixels: %d\n", endpix-startpix);
-        printf("Ticks for 1,000 random fills:      %d\n", endfill-startfill);
-        printf("Ticks for 1,000,000 random chars:  %d\n", endtext-starttext);
-        printf("Ticks for 1,000,000 random hlines: %d\n", endhline-starthline);
-        printf("Ticks for 1,000,000 random vlines: %d\n", endvline-startvline);
-        printf("Ticks for 10,000 random rects:     %d\n", endrect-startrect);
-        printf("Ticks for 1,000,000 random lines:  %d\n", endline-startline);
-        printf("Ticks per second:                  %d\n", HZ);
-        printf("Resolution: %dx%dx%d\n", *gfx_width, *gfx_height, *gfx_bpp * 8);
+        run_gfx_benchmark();
     }
-
-    printf("Testing keyboard LED's");
-
-    int n = 0;
-    int s = 1;
-
-    while(1)
-    {
-        ps2kbd_set_leds(PS2_NUM_LOCK);
-        timer_delay(HZ/4);
-        if(s < 0)
-            putchar('\b');
-        else
-            putchar('.');
-        n+=s;
-        if(n<=0 || n>=3)
-            s=-s;
-        ps2kbd_set_leds(PS2_CAPS_LOCK);
-        timer_delay(HZ/4);
-        if(s < 0)
-            putchar('\b');
-        else
-            putchar('.');
-        n+=s;
-        if(n<=0 || n>=3)
-            s=-s;
-        ps2kbd_set_leds(PS2_SCROLL_LOCK);
-        timer_delay(HZ/4);
-        if(s < 0)
-            putchar('\b');
-        else
-            putchar('.');
-        n+=s;
-        if(n<=0 || n>=3)
-            s=-s;
-        ps2kbd_set_leds(PS2_CAPS_LOCK);
-        timer_delay(HZ/4);
-        if(s < 0)
-            putchar('\b');
-        else
-            putchar('.');
-        n+=s;
-        if(n<=0 || n>=3)
-            s=-s;
-    }
+    flash_leds();
 }

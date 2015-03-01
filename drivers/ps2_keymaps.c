@@ -1,7 +1,7 @@
 #include <stdint.h>
 #include "ps2_keymaps.h"
 
-uint8_t ps2_scancodes_set1[128] = {
+uint8_t ps2_set1_scancodes[128] = {
     ERROR_KEY,    /* error */
     SPECIAL_KEY,  /* esc */
     PRINTING_KEY, /* 1 */
@@ -192,6 +192,7 @@ char ps2_set1_ascii[128] = {
     '\0',
     '\0',
 };
+
 char ps2_set1_shift[128] = {
     '\0',
     '\0',
@@ -286,4 +287,100 @@ char ps2_set1_shift[128] = {
     '\0',
     '\0',
     '\0',
+};
+
+uint8_t ps2_set1_special[128] = {
+    0, /* error */
+    SPECIAL_ESC,  /* esc */
+    0, /* 1 */
+    0, /* 2 */
+    0, /* 3 */
+    0, /* 4 */
+    0, /* 5 */
+    0, /* 6 */
+    0, /* 7 */
+    0, /* 8 */
+    0, /* 9 */
+    0, /* 0 */
+    0, /* - */
+    0, /* = */
+    SPECIAL_BKSP, /* backspace */
+    0, /* tab */
+    0, /* Q */
+    0, /* W */
+    0, /* E */
+    0, /* R */
+    0, /* T */
+    0, /* Y */
+    0, /* U */
+    0, /* I */
+    0, /* O */
+    0, /* P */
+    0, /* [ */
+    0, /* ] */
+    0, /* enter */
+    SPECIAL_CTRL,  /* left ctrl */
+    0, /* A */
+    0, /* S */
+    0, /* D */
+    0, /* F */
+    0, /* G */
+    0, /* H */
+    0, /* J */
+    0, /* K */
+    0, /* L */
+    0, /* ; */
+    0, /* ' */
+    0, /* ` */
+    SPECIAL_SHIFT, /* left shift */
+    0, /* \ (backslash) */
+    0, /* Z */
+    0, /* X */
+    0, /* C */
+    0, /* V */
+    0, /* B */
+    0, /* N */
+    0, /* M */
+    0, /* , */
+    0, /* . */
+    0, /* / */
+    SPECIAL_SHIFT, /* right shift */
+    0, /* keypad * */
+    SPECIAL_ALT, /* right alt */
+    0, /* space */
+    SPECIAL_CAPLOCK, /* caps lock */
+    SPECIAL_F1,  /* F1 */
+    SPECIAL_F2,  /* F2 */
+    SPECIAL_F3,  /* F3 */
+    SPECIAL_F4,  /* F4 */
+    SPECIAL_F5,  /* F5 */
+    SPECIAL_F6,  /* F6 */
+    SPECIAL_F7,  /* F7 */
+    SPECIAL_F8,  /* F8 */
+    SPECIAL_F9,  /* F9 */
+    SPECIAL_F10,  /* F10 */
+    SPECIAL_NUMLOCK,  /* num lock */
+    SPECIAL_SCRLLOCK,  /* scroll lock */
+    0, /* keypad 7 */
+    0, /* keypad 8 */
+    0, /* keypad 9 */
+    0, /* keypad - */
+    0, /* keypad 4 */
+    0, /* keypad 5 */
+    0, /* keypad 6 */
+    0, /* keypad + */
+    0, /* keypad 1 */
+    0, /* keypad 2 */
+    0, /* keypad 3 */
+    0, /* keypad 0 */
+    0, /* keypad . */
+    0,    /* 0x54 */
+    0,    /* 0x55 */
+    0,    /* 0x56 */
+    SPECIAL_F11,  /* F11 */
+    SPECIAL_F12,  /* F12 */
+    0,
+    0,
+    0,
+    0
 };

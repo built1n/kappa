@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdint.h>
 
 /* this is by no means standards-compliant... but who cares? :P */
 
@@ -14,8 +15,9 @@ char* itoa(int val, int base);
 #define MIN(x,y) ((x<y)?x:y)
 #define MAX(x,y) ((x>y)?x:y)
 
+uint64_t rand64(void);
 unsigned int rand(void);
-void srand(unsigned int);
+void srand(uint64_t);
 int abs(int);
 void *malloc(size_t);
 int snprintf(char*, int, const char*, ...);

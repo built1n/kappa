@@ -2,6 +2,7 @@
 #define _PLUGIN_H_
 
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "gfx.h"
@@ -41,7 +42,7 @@ struct plugin_api {
     void     (*lcd_set_background)(unsigned foreground);
     unsigned (*lcd_get_background)(void);
 
-    void (*srand)(unsigned int seed);
+    void (*srand)(uint64_t seed);
     unsigned int (*rand)(void);
 
     void (*lcd_filltriangle)(int, int, int, int, int, int);

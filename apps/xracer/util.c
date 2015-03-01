@@ -88,7 +88,6 @@ int camera_calc_depth(int fov)
 }
 
 void error_real(const char *msg, ...) {
-    char buf[256];
     LOGF("ERROR: %s!", msg);
 }
 

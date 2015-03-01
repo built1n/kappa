@@ -35,31 +35,45 @@ char* itoa(int val, int base)
     return &buf[i+(neg?0:1)];
 }
 
-static unsigned long rand_s1 = 18, rand_s2 = 5, rand_s3 = 43;
+#define RAND_A1 12
+#define RAND_A2 25
+#define RAND_A3 27
 
-#define M 1103515245UL
-#define A 12345UL
+#define RAND_C1 4101842887655102017LL
+#define RAND_C2 2685821657736338717LL
 
-/* this is a very fast tausworthe RNG */
+static uint64_t rand_state = RAND_C1;
+
+uint64_t rand64(void)
+{
+    /* Marsaglia's Xorshift generator combined with a LCRNG */
+    rand_state ^= rand_state >> RAND_A1;
+    rand_state ^= rand_state << RAND_A2;
+    rand_state ^= rand_state >> RAND_A3;
+    return rand_state * RAND_C2;
+}
+
+static uint64_t rand_temp;
+static int bytes_left = 0;
 
 unsigned int rand(void)
 {
-    rand_s1 = (((rand_s1&4294967294)<<12)^(((rand_s1<<13)^rand_s1)>>19));
-    rand_s2 = (((rand_s2&4294967288)<< 4)^(((rand_s2<< 2)^rand_s2)>>25));
-    rand_s3 = (((rand_s3&4294967280)<<17)^(((rand_s3<< 3)^rand_s3)>>11));
-    return (rand_s1 ^ rand_s2 ^ rand_s3);
+    if(bytes_left < 4)
+    {
+        rand_temp = rand64();
+        bytes_left = 8;
+    }
+    unsigned int ret = rand_temp & 0xFFFFFFFF;
+    rand_temp >>= 32;
+    bytes_left -= 4;
+    return ret;
 }
 
-void srand(unsigned int seed)
+void srand(uint64_t seed)
 {
-    if(!seed)
-        seed = 42;
-    rand_s1 = seed++;
-    rand_s2 = seed++;
-    rand_s3 = seed++;
-    /* "warm it up" */
-    for(int i=0;i<10;++i)
-        rand();
+    if(seed == RAND_C1)
+        seed = RAND_C1 + 1;
+    rand_state = RAND_C1 ^ seed;
 }
 
 int abs(int val)
@@ -69,6 +83,7 @@ int abs(int val)
 
 void *malloc(size_t sz)
 {
+    return kmalloc(sz);
     static uint8_t mallocbuf[1024*1024*16];
     static uint8_t *next_ptr = mallocbuf;
     static int bytes_left = sizeof(mallocbuf);
