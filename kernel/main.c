@@ -6,6 +6,7 @@
 #include "gfx.h"
 #include "gfx_font.h"
 #include "idt.h"
+#include "initrd.h"
 #include "isr.h"
 #include "irq.h"
 #include "log.h"
@@ -17,6 +18,7 @@
 #include "fpu.h"
 #include "timer.h"
 #include "version.h"
+#include "vfs.h"
 #include "vgatext.h"
 
 void gpf(struct regs_t *regs)
@@ -103,6 +105,9 @@ void flash_leds(void)
 bool boot(struct multiboot_info_t *hdr, uint32_t magic)
 {
     fpu_enable();
+
+    /* load initrd if any, this will also prevent modules from being clobbered by kmalloc */
+    initrd_init(hdr);
 
     /* this should go to port e9, which is the Bochs debug port */
     printf("Testing early I/O\n");
@@ -272,9 +277,37 @@ static void keyhandler(const struct ps2_keyevent *ev)
     }
 }
 
+void fs_test(void)
+{
+    struct vfs_node *fs = vfs_init();
+    vfs_mkdir(fs, "bin");
+    vfs_mkdir(fs, "etc");
+    vfs_mkdir(fs, "bin");
+    vfs_creat(fs, "file1.txt");
+    vfs_creat(fs, "file2.txt");
+    vfs_creat(fs, "file3.txt");
+    vfs_creat(fs, "file4.txt");
+    vfs_creat(fs, "main.c");
+    DIR *file = vfs_opendir(fs);
+    struct dirent *dir;
+    printf("=== File listing of / ===\n");
+    do {
+        dir = vfs_readdir(file);
+        if(!dir)
+            break;
+        printf("%s", dir->d_name);
+        if(dir->d_type == DT_DIR)
+            putchar('/');
+        putchar('\n');
+    } while(dir);
+}
+
 void main(struct multiboot_info_t *hdr, uint32_t magic)
 {
     bool gfx_status = boot(hdr, magic);
+
+    fs_test();
+
     gfx_set_foreground(0x80FF80);
     printf("Hello, world!\n");
     gfx_set_foreground(GFX_WHITE);

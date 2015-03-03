@@ -27,11 +27,13 @@ arch/i686/paging.o
 drivers/gfx_font.o
 drivers/ps2_keymaps.o
 kernel/heap.o
+kernel/initrd.o
 kernel/io.o
 kernel/log.o
 kernel/main.o
 kernel/panic.o
 kernel/timer.o
+kernel/vfs.o
 libc/stdio.o
 libc/stdlib.o
 libc/string.o

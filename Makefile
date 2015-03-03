@@ -28,6 +28,7 @@ kappa.iso: kappa.bin
 	@echo "Building ISO under $(ISODIR)/..."
 	@mkdir -p $(ISODIR)
 	@mkdir -p $(ISODIR)/boot
+	@cp initrd $(ISODIR)/initrd.img
 	@cp kappa.bin $(ISODIR)/efi.img
 	@cp kappa.bin $(ISODIR)/boot/kappa.bin
 	@mkdir -p $(ISODIR)/boot/grub

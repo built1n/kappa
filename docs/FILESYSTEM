@@ -1,0 +1,34 @@
+=== Virtual Filesystem Design ===
+
+The virtual (in-RAM) filesystem is made of levels of nodes.
+
+            NULL
+             |
+            [/] --- NULL
+             |
+           [bin] --------------------------- [etc] ---------------------- [home] --- [var] --- NULL
+             |                                 |
+           [cat] --- [cd] --- [ls] --- NULL [group] --- [passwd] --- NULL
+
+=== Sample Implementation ===
+
+struct vfs_node {
+    unsigned int flags;
+    unsigned int name_len;
+    char *name;
+    uint64_t file_len;
+    unsigned char *contents;
+    struct vfs_node *parent;
+    struct vfs_node *next;
+    struct vfs_node *child;
+};
+
+=== The 'flags' field ===
+
+= Bits 0-1 =
+
+The next three values are mutually exclusive.
+
+0: directory
+1: regular file
+2: special file

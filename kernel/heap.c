@@ -44,3 +44,8 @@ void *kmalloc_ap(size_t sz, void **phys)
 {
     return kmalloc_int(sz, 1, phys);
 }
+
+void kmalloc_set_addr(uint32_t addr)
+{
+    kmalloc_addr = addr;
+}

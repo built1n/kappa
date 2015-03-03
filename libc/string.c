@@ -2,7 +2,7 @@
 #include <stddef.h>
 #include "string.h"
 
-int strlen(const char *str)
+size_t strlen(const char *str)
 {
     int len = 0;
     while(*str++)
@@ -24,4 +24,24 @@ void* memcpy(void *dest, void *src, size_t sz)
     while(sz--)
         *(char*)dest++ = *(char*)src++;
     return dest;
+}
+
+char* strdup(const char *str)
+{
+    int len = strlen(str);
+    /* allocate room for the string and it's NULL terminator */
+    char *ret = malloc(len + 1);
+    memcpy(ret, str, len + 1);
+    return ret;
+}
+
+char* strncat(char *dest, const char *src, size_t n)
+{
+    /* save this for the return */
+    char *d = dest;
+    while(*dest++);
+    while(n && (*dest++ = *src++)) --n;
+    if(*dest)
+        *dest = '\0';
+    return d;
 }

@@ -50,6 +50,8 @@ struct ps2_specialkeys_t {
 struct ps2_keyevent {
     const struct ps2_specialkeys_t *special_keys;
     char ascii;
+    uint8_t scancode;
+    uint8_t ps2_scancode_set;
 };
 
 /* returns which arrow keys are down */

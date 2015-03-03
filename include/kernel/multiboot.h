@@ -1,3 +1,6 @@
+#ifndef _MULTIBOOT_H_
+#define _MULTIBOOT_H_
+
 #include <stdint.h>
 
 struct multiboot_aout_symbol_table_t
@@ -36,6 +39,13 @@ struct vbe_info_t {
     uint32_t physbase;
     uint32_t reserved1;
     uint16_t reserved2;
+} __attribute__((packed));
+
+struct multiboot_mod_t {
+    uint32_t mod_start;
+    uint32_t mod_end;
+    uint32_t mod_str;
+    uint32_t reserved;
 } __attribute__((packed));
 
 struct multiboot_info_t
@@ -88,3 +98,5 @@ struct multiboot_info_t
     uint16_t vbe_interface_off;
     uint16_t vbe_interface_len;
 } __attribute__((packed));
+
+#endif
